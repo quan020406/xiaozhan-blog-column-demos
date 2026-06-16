@@ -1,6 +1,6 @@
 # xiaozhan-blog-column-demos
 
-这是小站博客专栏配套 Demo 仓库，用来集中存放文章中涉及的示例工程、验证脚本、发布素材和说明文档。
+这是小湛博客专栏配套 Demo 仓库，用来集中存放文章中涉及的示例工程、验证脚本、配套素材和运行说明。
 
 每个专栏独立放在一个目录下，后续新增专栏或 Demo 时，直接新增同级目录，避免不同文章系列的代码和素材混在一起。
 
@@ -8,14 +8,26 @@
 
 | 专栏 | 内容 | 入口 |
 | --- | --- | --- |
-| 下一代工作流：当 AI 成为我的全职下属 | 5 篇 CSDN 技术文章、配套素材、Spring Boot 高并发秒杀 Demo、AI 工程治理脚本 | [下一代工作流-当AI成为我的全职下属](./下一代工作流-当AI成为我的全职下属/) |
+| 下一代工作流：当 AI 成为我的全职下属 | Spring Boot 高并发秒杀 Demo、AI 工程治理脚本、配套运行素材 | [下一代工作流-当AI成为我的全职下属](./下一代工作流-当AI成为我的全职下属/) |
 
 ## 仓库约定
 
 - 根目录只放仓库总览、通用配置和各专栏目录。
-- 每个专栏目录保留自己的 `README.md`，说明文章顺序、Demo 运行方式和发布注意事项。
+- 每个专栏目录保留自己的 `README.md`，说明 Demo 运行方式和注意事项。
 - 本机环境变量、私有地址、端口和密钥不提交到仓库；只提交 `.env.example` 这类示例配置。
 - Java、Python 等构建产物不提交，例如 `target/`、`__pycache__/`、`.pytest_cache/`。
+
+## 只拉取某个目录
+
+如果只想下载某个专栏或某个 Demo，可以使用 Git sparse-checkout：
+
+```powershell
+git clone --filter=blob:none --sparse git@github.com:quan020406/xiaozhan-blog-column-demos.git
+cd xiaozhan-blog-column-demos
+git sparse-checkout set "下一代工作流-当AI成为我的全职下属/demo/AutoEnterprise-Seckill"
+```
+
+如果后续想切换到另一个目录，重新执行 `git sparse-checkout set "<目标目录>"` 即可。
 
 ## 当前可用 Demo
 
