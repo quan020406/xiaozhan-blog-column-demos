@@ -1,0 +1,14 @@
+**/target/
+**/__pycache__/
+**/.pytest_cache/
+**/*.pyc
+
+**/.env
+**/.env.*
+!**/.env.example
+
+.idea/
+.vscode/
+
+**/logs/
+**/reports/

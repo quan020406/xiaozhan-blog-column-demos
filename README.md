@@ -1,2 +1,33 @@
 # xiaozhan-blog-column-demos
-xiaozhan的博客涉及的各类demo
+
+这是小站博客专栏配套 Demo 仓库，用来集中存放文章中涉及的示例工程、验证脚本、发布素材和说明文档。
+
+每个专栏独立放在一个目录下，后续新增专栏或 Demo 时，直接新增同级目录，避免不同文章系列的代码和素材混在一起。
+
+## 专栏目录
+
+| 专栏 | 内容 | 入口 |
+| --- | --- | --- |
+| 下一代工作流：当 AI 成为我的全职下属 | 5 篇 CSDN 技术文章、配套素材、Spring Boot 高并发秒杀 Demo、AI 工程治理脚本 | [下一代工作流-当AI成为我的全职下属](./下一代工作流-当AI成为我的全职下属/) |
+
+## 仓库约定
+
+- 根目录只放仓库总览、通用配置和各专栏目录。
+- 每个专栏目录保留自己的 `README.md`，说明文章顺序、Demo 运行方式和发布注意事项。
+- 本机环境变量、私有地址、端口和密钥不提交到仓库；只提交 `.env.example` 这类示例配置。
+- Java、Python 等构建产物不提交，例如 `target/`、`__pycache__/`、`.pytest_cache/`。
+
+## 当前可用 Demo
+
+### AutoEnterprise-Seckill
+
+位置：[下一代工作流-当AI成为我的全职下属/demo/AutoEnterprise-Seckill](./下一代工作流-当AI成为我的全职下属/demo/AutoEnterprise-Seckill/)
+
+这是一个 Spring Boot + MyBatis-Plus + H2 + Redisson 的高并发秒杀 Demo，用于演示：
+
+- 先查后改导致的超卖风险
+- 数据库条件更新的原子扣减方案
+- Redisson 分布式锁模式
+- 面向 AI Agent 的上下文裁剪、提交审计和防作弊检查
+
+运行前请进入对应 Demo 目录查看专栏 README 和 Demo README。

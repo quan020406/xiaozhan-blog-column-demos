@@ -1,0 +1,4 @@
+app:
+  redis:
+    enabled: true
+    address: ${REDIS_ADDRESS}

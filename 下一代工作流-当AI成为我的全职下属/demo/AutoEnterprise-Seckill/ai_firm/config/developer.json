@@ -1,0 +1,8 @@
+{
+  "name": "小阿",
+  "role": "Developer Agent",
+  "allowed_paths": ["src/main/java"],
+  "forbidden_paths": ["src/test", "pipeline"],
+  "objective": "在不弱化测试和审计规则的前提下实现 Issue"
+}
+
