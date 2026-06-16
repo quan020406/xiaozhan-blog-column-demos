@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>秒杀并发过程动画</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f5f7fb;
+      --panel: #ffffff;
+      --ink: #17202a;
+      --muted: #667085;
+      --line: #d9e1ea;
+      --blue: #2563eb;
+      --red: #dc2626;
+      --green: #16803c;
+      --amber: #b45309;
+      --violet: #6d28d9;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Microsoft YaHei", "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--page);
+    }
+    main {
+      width: min(1220px, calc(100vw - 28px));
+      margin: 0 auto;
+      padding: 24px 0 40px;
+    }
+    header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 30px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    button {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink);
+      border-radius: 8px;
+      padding: 0 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button.primary {
+      color: #fff;
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+    label {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    input[type="range"] {
+      width: 120px;
+    }
+    .stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .scenario {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .scenario.unsafe { border-top: 4px solid var(--red); }
+    .scenario.atomic { border-top: 4px solid var(--green); }
+    .scenario-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    h2 {
+      margin: 0 0 6px;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+    .scenario-head p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 30px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge.red { color: #fff; background: var(--red); }
+    .badge.green { color: #fff; background: var(--green); }
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 12px 16px 0;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfdff;
+    }
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .metric strong {
+      display: block;
+      font-size: 22px;
+      line-height: 1.15;
+    }
+    .diagram {
+      position: relative;
+      height: 430px;
+      margin: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(37, 99, 235, .06) 0 28%, transparent 28% 100%),
+        linear-gradient(90deg, transparent 0 38%, rgba(109, 40, 217, .06) 38% 62%, transparent 62% 100%),
+        linear-gradient(90deg, transparent 0 72%, rgba(22, 128, 60, .06) 72% 100%);
+      overflow: hidden;
+    }
+    .zone {
+      position: absolute;
+      top: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+    .zone.client { left: 18px; }
+    .zone.service { left: 41%; }
+    .zone.db { right: 18px; }
+    .parallel-band {
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      top: 48px;
+      height: 310px;
+      border-radius: 8px;
+      border: 1px dashed rgba(37, 99, 235, .35);
+      pointer-events: none;
+    }
+    .parallel-band span {
+      position: absolute;
+      left: 10px;
+      top: -11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: var(--blue);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .server, .database {
+      position: absolute;
+      top: 138px;
+      width: 126px;
+      min-height: 92px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 10px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, .08);
+    }
+    .server { left: calc(50% - 63px); }
+    .database { right: 26px; }
+    .server strong, .database strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .database span, .server span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .lock {
+      color: var(--green);
+      font-size: 22px;
+      margin-bottom: 2px;
+    }
+    .request {
+      position: absolute;
+      left: 18px;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+      background: var(--blue);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, .22);
+      transition:
+        transform var(--duration) linear,
+        background-color 180ms ease,
+        opacity 180ms ease;
+    }
+    .request.reading { background: var(--amber); }
+    .request.success { background: var(--green); }
+    .request.fail { background: var(--muted); }
+    .request.bad { background: var(--red); }
+    .ghost-stock {
+      position: absolute;
+      right: 48px;
+      top: 248px;
+      color: var(--red);
+      font-size: 13px;
+      font-weight: 700;
+      opacity: 0;
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+    .ghost-stock.show {
+      opacity: 1;
+      transform: translateY(-6px);
+    }
+    .result-box {
+      position: absolute;
+      right: 18px;
+      width: 138px;
+      min-height: 58px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 8px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, .08);
+    }
+    .result-box strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .result-box span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .result-box.orders {
+      top: 54px;
+      border-left: 5px solid var(--green);
+    }
+    .result-box.rejects {
+      top: 248px;
+      border-left: 5px solid var(--red);
+    }
+    .sql-gate {
+      position: absolute;
+      left: calc(50% - 84px);
+      bottom: 18px;
+      width: 168px;
+      border-radius: 8px;
+      border: 1px solid rgba(22, 128, 60, .35);
+      background: #ecfdf3;
+      color: #14532d;
+      padding: 8px;
+      text-align: center;
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 700;
+    }
+    .sql-gate.danger {
+      border-color: rgba(220, 38, 38, .35);
+      background: #fef2f2;
+      color: #7f1d1d;
+    }
+    .request::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 50%;
+      top: 38px;
+      transform: translateX(-50%);
+      min-width: 74px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: rgba(16, 24, 40, .86);
+      color: #fff;
+      font-size: 11px;
+      line-height: 1.35;
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .request.labeled::after {
+      opacity: 1;
+    }
+    .log {
+      height: 160px;
+      margin: 0 16px 16px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #101828;
+      color: #e6edf7;
+      overflow: auto;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 12px;
+      line-height: 1.55;
+    }
+    .log div { margin-bottom: 4px; }
+    .log .red { color: #ffb4b4; }
+    .log .green { color: #a7f3d0; }
+    .log .amber { color: #fde68a; }
+    .legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .dot {
+      width: 12px;
+      height: 12px;
+      display: inline-block;
+      border-radius: 999px;
+      margin-right: 5px;
+      vertical-align: -1px;
+    }
+    .dot.blue { background: var(--blue); }
+    .dot.amber { background: var(--amber); }
+    .dot.green { background: var(--green); }
+    .dot.red { background: var(--red); }
+    .dot.gray { background: var(--muted); }
+    .lesson {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 0 0 16px;
+    }
+    .lesson-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .lesson-card h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .lesson-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+    .lesson-card.unsafe-note {
+      border-left: 5px solid var(--red);
+    }
+    .lesson-card.atomic-note {
+      border-left: 5px solid var(--green);
+    }
+    .phase {
+      margin: 16px 16px 0;
+      padding: 12px;
+      border-radius: 8px;
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+    .phase strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 15px;
+    }
+    .rule {
+      margin: 12px 16px 0;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .rule h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+    .rule code {
+      display: block;
+      padding: 10px;
+      border-radius: 6px;
+      background: #101828;
+      color: #e6edf7;
+      white-space: pre-wrap;
+      line-height: 1.55;
+      font-size: 12px;
+      font-family: Consolas, "Courier New", monospace;
+    }
+    @media (max-width: 920px) {
+      header { grid-template-columns: 1fr; }
+      .controls { justify-content: flex-start; }
+      .stage, .lesson { grid-template-columns: 1fr; }
+      .diagram { height: 430px; }
+    }
+    @media (max-width: 560px) {
+      main { width: min(100vw - 18px, 1220px); padding-top: 16px; }
+      h1 { font-size: 24px; }
+      .metrics { grid-template-columns: 1fr; }
+      .server, .database { width: 100px; }
+      .server { left: calc(50% - 50px); }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>秒杀并发过程动画</h1>
+        <p class="subtitle">左侧演示 unsafe 的“先查后改”如何超卖；右侧演示 atomic 的数据库条件扣减如何把成功订单限制在库存以内。</p>
+        <div class="legend">
+          <span><i class="dot blue"></i>请求进入</span>
+          <span><i class="dot amber"></i>读取库存</span>
+          <span><i class="dot green"></i>成功下单</span>
+          <span><i class="dot red"></i>超卖订单</span>
+          <span><i class="dot gray"></i>售罄失败</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="primary" id="play">播放</button>
+        <button id="pause">暂停</button>
+        <button id="reset">重置</button>
+        <label>速度 <input id="speed" type="range" min="0.6" max="2.0" value="1" step="0.1"></label>
+      </div>
+    </header>
+
+    <section class="lesson">
+      <div class="lesson-card unsafe-note">
+        <h2>Unsafe 的问题点</h2>
+        <p>“判断库存”和“扣库存”分成两步，中间存在竞态窗口。并发请求会同时看到库存还够，于是都继续创建订单。</p>
+      </div>
+      <div class="lesson-card atomic-note">
+        <h2>Atomic 的关键点</h2>
+        <p>把“库存必须大于 0”和“库存减 1”放进同一条数据库更新语句，数据库只会让有限库存对应的请求成功。</p>
+      </div>
+    </section>
+
+    <section class="stage">
+      <article class="scenario unsafe" data-scenario="unsafe">
+        <div class="scenario-head">
+          <div>
+            <h2>Unsafe：先查库存，再扣库存</h2>
+            <p>多个请求同时读到同一个旧库存，各自认为可以下单，最后写回时互相覆盖。</p>
+          </div>
+          <span class="badge red" id="unsafe-state">等待播放</span>
+        </div>
+        <div class="phase" id="unsafe-phase">
+          <strong>当前阶段：等待播放</strong>
+          点击播放后，请关注多个请求是否读到了同一个旧库存。
+        </div>
+        <div class="rule">
+          <h3>实现路径</h3>
+          <code>select stock
+if stock &gt; 0:
+    sleep(放大竞态窗口)
+    update stock = oldStock - 1
+    insert order</code>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span>库存</span><strong id="unsafe-stock">5</strong></div>
+          <div class="metric"><span>订单</span><strong id="unsafe-orders">0</strong></div>
+          <div class="metric"><span>超卖</span><strong id="unsafe-oversold">0</strong></div>
+        </div>
+        <div class="diagram" id="unsafe-diagram">
+          <div class="parallel-band"><span>并发窗口：请求重叠执行</span></div>
+          <div class="zone client">用户请求</div>
+          <div class="zone service">业务服务</div>
+          <div class="zone db">数据库</div>
+          <div class="server"><div><strong>Service</strong><span>selectById<br>sleep<br>updateById</span></div></div>
+          <div class="database"><div><strong>DB</strong><span id="unsafe-db-text">stock=5<br>orders=0</span></div></div>
+          <div class="sql-gate danger">无原子条件<br>读旧库存后继续写入</div>
+          <div class="result-box orders"><strong>写入订单</strong><span id="unsafe-order-box">0 条</span></div>
+          <div class="result-box rejects"><strong>本应拒绝</strong><span id="unsafe-reject-box">0 条超卖仍写入</span></div>
+          <div class="ghost-stock" id="unsafe-ghost">多个请求读到 stock=5</div>
+        </div>
+        <div class="log" id="unsafe-log"></div>
+      </article>
+
+      <article class="scenario atomic" data-scenario="atomic">
+        <div class="scenario-head">
+          <div>
+            <h2>Atomic：一条 SQL 条件扣减</h2>
+            <p>扣库存和判断库存合并到数据库原子更新里，库存为 0 后直接失败。</p>
+          </div>
+          <span class="badge green" id="atomic-state">等待播放</span>
+        </div>
+        <div class="phase" id="atomic-phase">
+          <strong>当前阶段：等待播放</strong>
+          点击播放后，请关注每个请求是否都必须通过数据库条件扣减。
+        </div>
+        <div class="rule">
+          <h3>实现路径</h3>
+          <code>UPDATE seckill_product
+SET stock = stock - 1
+WHERE id = ? AND stock &gt; 0
+
+affectedRows == 1 才 insert order</code>
+        </div>
+        <div class="metrics">
+          <div class="metric"><span>库存</span><strong id="atomic-stock">5</strong></div>
+          <div class="metric"><span>订单</span><strong id="atomic-orders">0</strong></div>
+          <div class="metric"><span>失败</span><strong id="atomic-fail">0</strong></div>
+        </div>
+        <div class="diagram" id="atomic-diagram">
+          <div class="parallel-band"><span>并发请求：由数据库排队判定</span></div>
+          <div class="zone client">用户请求</div>
+          <div class="zone service">业务服务</div>
+          <div class="zone db">数据库</div>
+          <div class="server"><div><div class="lock">✓</div><strong>Service</strong><span>deductStockIfAvailable</span></div></div>
+          <div class="database"><div><strong>DB</strong><span id="atomic-db-text">stock=5<br>orders=0</span></div></div>
+          <div class="sql-gate">SQL gate<br>stock &gt; 0 ? affectedRows</div>
+          <div class="result-box orders"><strong>写入订单</strong><span id="atomic-order-box">0 条</span></div>
+          <div class="result-box rejects"><strong>被 SQL 拒绝</strong><span id="atomic-reject-box">0 条 affectedRows=0</span></div>
+        </div>
+        <div class="log" id="atomic-log"></div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const INITIAL_STOCK = 5;
+    const REQUESTS = 10;
+    const unsafe = createScenario("unsafe");
+    const atomic = createScenario("atomic");
+    const timers = new Set();
+    let speed = 1;
+    let paused = false;
+
+    document.documentElement.style.setProperty("--duration", "520ms");
+
+    document.getElementById("play").addEventListener("click", () => {
+      if (paused) {
+        paused = false;
+        return;
+      }
+      start();
+    });
+    document.getElementById("pause").addEventListener("click", () => {
+      paused = true;
+      log(unsafe, "已暂停；点击播放会继续后续步骤。", "amber");
+      log(atomic, "已暂停；点击播放会继续后续步骤。", "amber");
+    });
+    document.getElementById("reset").addEventListener("click", reset);
+    document.getElementById("speed").addEventListener("input", (event) => {
+      speed = Number(event.target.value);
+      document.documentElement.style.setProperty("--duration", `${Math.max(180, 520 / speed)}ms`);
+    });
+
+    reset();
+
+    function createScenario(name) {
+      return {
+        name,
+        diagram: document.getElementById(`${name}-diagram`),
+        log: document.getElementById(`${name}-log`),
+        state: document.getElementById(`${name}-state`),
+        stockEl: document.getElementById(`${name}-stock`),
+        ordersEl: document.getElementById(`${name}-orders`),
+        dbText: document.getElementById(`${name}-db-text`),
+        oversoldEl: document.getElementById(`${name}-oversold`),
+        failEl: document.getElementById(`${name}-fail`),
+        phaseEl: document.getElementById(`${name}-phase`),
+        orderBox: document.getElementById(`${name}-order-box`),
+        rejectBox: document.getElementById(`${name}-reject-box`),
+        ghost: document.getElementById(`${name}-ghost`),
+        stock: INITIAL_STOCK,
+        orders: 0,
+        oversold: 0,
+        fail: 0,
+        requests: []
+      };
+    }
+
+    function start() {
+      reset();
+      log(unsafe, "10 个请求几乎同时进入，库存初始值为 5。", "amber");
+      log(atomic, "10 个请求进入，数据库用 stock > 0 条件控制成功数。", "amber");
+      unsafe.state.textContent = "演示中";
+      atomic.state.textContent = "演示中";
+      setPhase(unsafe, "阶段 1：并发请求同时进入", "所有请求都会先读库存。问题是它们读到的可能是同一个旧值。");
+      setPhase(atomic, "阶段 1：并发请求同时进入", "请求也可以同时到达，但真正能否成功由数据库条件更新决定。");
+      for (let i = 1; i <= REQUESTS; i += 1) {
+        schedule((i - 1) * 90, () => spawnUnsafe(i));
+        schedule((i - 1) * 120, () => spawnAtomic(i));
+      }
+      schedule(3600, () => {
+        unsafe.state.textContent = "发生超卖";
+        atomic.state.textContent = "无超卖";
+        setPhase(unsafe, "阶段 4：结果失真", `订单 ${unsafe.orders} 已超过初始库存 ${INITIAL_STOCK}，库存数字已经不能代表真实售卖量。`);
+        setPhase(atomic, "阶段 4：结果一致", `订单 ${atomic.orders} 没有超过初始库存 ${INITIAL_STOCK}，库存和订单保持一致。`);
+        log(unsafe, `结束：库存显示 ${unsafe.stock}，订单 ${unsafe.orders}，订单数超过初始库存 ${INITIAL_STOCK}。`, "red");
+        log(atomic, `结束：库存 ${atomic.stock}，订单 ${atomic.orders}，失败 ${atomic.fail}，订单数没有超过库存。`, "green");
+      });
+    }
+
+    function reset() {
+      for (const id of timers) {
+        clearTimeout(id);
+      }
+      timers.clear();
+      paused = false;
+      resetScenario(unsafe);
+      resetScenario(atomic);
+    }
+
+    function resetScenario(scene) {
+      scene.stock = INITIAL_STOCK;
+      scene.orders = 0;
+      scene.oversold = 0;
+      scene.fail = 0;
+      scene.requests.forEach((node) => node.remove());
+      scene.requests = [];
+      scene.log.innerHTML = "";
+      scene.state.textContent = "等待播放";
+      setPhase(scene, "当前阶段：等待播放", scene.name === "unsafe"
+        ? "点击播放后，请关注多个请求是否读到了同一个旧库存。"
+        : "点击播放后，请关注每个请求是否都必须通过数据库条件扣减。"
+      );
+      if (scene.ghost) scene.ghost.classList.remove("show");
+      update(scene);
+    }
+
+    function schedule(delay, action) {
+      const id = setTimeout(() => {
+        timers.delete(id);
+        waitUntilResumed(action);
+      }, delay / speed);
+      timers.add(id);
+    }
+
+    function waitUntilResumed(action) {
+      if (!paused) {
+        action();
+        return;
+      }
+      const id = setTimeout(() => {
+        timers.delete(id);
+        waitUntilResumed(action);
+      }, 120);
+      timers.add(id);
+    }
+
+    function spawnUnsafe(id) {
+      const node = createRequest(unsafe, id);
+      move(node, 160, laneY(id));
+      node.classList.add("reading");
+      setRequestLabel(node, "并发读取");
+      setPhase(unsafe, "阶段 2：多个请求读取旧库存", "这些请求都看到 stock=5，于是全部判断“还能买”。");
+      log(unsafe, `请求 ${id} 读取库存：stock=5，判断可以下单。`, "amber");
+      if (unsafe.ghost) unsafe.ghost.classList.add("show");
+
+      schedule(740 + id * 35, () => {
+        if (id <= 5) {
+          unsafe.stock = Math.max(0, unsafe.stock - 1);
+          moveToResult(node, "order", id);
+          setRequestLabel(node, "写入订单");
+        } else {
+          unsafe.oversold += 1;
+          node.classList.add("bad");
+          moveToResult(node, "order", id);
+          setRequestLabel(node, "超卖仍写入");
+        }
+        unsafe.orders += 1;
+        node.classList.add(id <= 5 ? "success" : "bad");
+        setPhase(unsafe, "阶段 3：仍然写入订单", "没有 SQL 条件拦截，后续请求即使超过真实库存，也继续进入“写入订单”区。");
+        log(
+          unsafe,
+          id <= 5
+            ? `请求 ${id} 写入订单成功，库存被扣减。`
+            : `请求 ${id} 仍然写入订单，但真实库存早已不足，形成超卖。`,
+          id <= 5 ? "green" : "red"
+        );
+        update(unsafe);
+      });
+    }
+
+    function spawnAtomic(id) {
+      const node = createRequest(atomic, id);
+      move(node, 160, laneY(id));
+      node.classList.add("reading");
+      setRequestLabel(node, "SQL 判定");
+      setPhase(atomic, "阶段 2：请求进入数据库条件更新", "每个请求不单独相信旧库存，而是让数据库执行 stock > 0 的原子判断。");
+      log(atomic, `请求 ${id} 执行 UPDATE ... WHERE stock > 0。`, "amber");
+
+      schedule(520 + id * 140, () => {
+        if (atomic.stock > 0) {
+          atomic.stock -= 1;
+          atomic.orders += 1;
+          moveToResult(node, "order", id);
+          node.classList.add("success");
+          setRequestLabel(node, "affectedRows=1 写入");
+          log(atomic, `请求 ${id} 条件更新成功：affectedRows=1，写入订单，库存扣为 ${atomic.stock}。`, "green");
+        } else {
+          atomic.fail += 1;
+          moveToResult(node, "reject", id);
+          node.classList.add("fail");
+          setRequestLabel(node, "affectedRows=0 拒绝");
+          setPhase(atomic, "阶段 3：SQL 条件扣减拒绝", "库存归零后，UPDATE ... WHERE stock > 0 影响 0 行，服务不会创建订单。");
+          log(atomic, `请求 ${id} 条件更新失败：affectedRows=0，被 SQL gate 拒绝，不写入订单。`, "amber");
+        }
+        update(atomic);
+      });
+    }
+
+    function createRequest(scene, id) {
+      const node = document.createElement("div");
+      node.className = "request";
+      node.textContent = id;
+      node.style.top = `${laneY(id)}px`;
+      scene.diagram.appendChild(node);
+      scene.requests.push(node);
+      return node;
+    }
+
+    function setRequestLabel(node, text) {
+      node.dataset.label = text;
+      node.classList.add("labeled");
+    }
+
+    function move(node, x, y) {
+      node.style.transform = `translate(${x}px, ${y - Number.parseInt(node.style.top, 10)}px)`;
+    }
+
+    function moveToResult(node, type, id) {
+      const row = (id - 1) % 5;
+      const col = Math.floor((id - 1) / 5);
+      const x = 430 + col * 38;
+      const y = type === "order" ? 64 + row * 5 : 258 + row * 5;
+      move(node, x, y);
+    }
+
+    function laneY(id) {
+      const lanes = [58, 92, 126, 160, 194, 228, 262, 296, 330, 24];
+      return lanes[(id - 1) % lanes.length];
+    }
+
+    function update(scene) {
+      scene.stockEl.textContent = scene.stock;
+      scene.ordersEl.textContent = scene.orders;
+      scene.dbText.innerHTML = `stock=${scene.stock}<br>orders=${scene.orders}`;
+      if (scene.oversoldEl) scene.oversoldEl.textContent = scene.oversold;
+      if (scene.failEl) scene.failEl.textContent = scene.fail;
+      if (scene.orderBox) scene.orderBox.textContent = `${scene.orders} 条`;
+      if (scene.rejectBox) {
+        scene.rejectBox.textContent = scene.name === "unsafe"
+          ? `${scene.oversold} 条超卖仍写入`
+          : `${scene.fail} 条 affectedRows=0`;
+      }
+    }
+
+    function setPhase(scene, title, body) {
+      scene.phaseEl.innerHTML = `<strong>${title}</strong>${body}`;
+    }
+
+    function log(scene, text, level) {
+      const line = document.createElement("div");
+      line.className = level || "";
+      line.textContent = text;
+      scene.log.appendChild(line);
+      scene.log.scrollTop = scene.log.scrollHeight;
+    }
+  </script>
+</body>
+</html>
