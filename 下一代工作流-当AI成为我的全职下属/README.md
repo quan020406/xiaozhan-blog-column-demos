@@ -10,6 +10,16 @@ demo/AutoEnterprise-Seckill/   # Spring Boot + MyBatis-Plus + Redisson Demo
 scripts/                        # 专栏目录级检查脚本
 ```
 
+## 动画辅助理解
+
+第三期《AI Agent 防作弊 CI 实战》配套 3 个 GIF 和 3 个完整 HTML 动画页：
+
+- [第三期动画索引页](../animations/article-03/)
+- [CI 流水线拦截动画](../animations/article-03/ci-gate.html)
+- [假绿色流水线对比动画](../animations/article-03/fake-green.html)
+- [只读门禁权限边界动画](../animations/article-03/readonly-gate.html)
+- [iframe 调用片段](../animations/article-03/iframe-snippets.md)
+
 ## 运行 Demo
 
 本仓库不在代码里写死应用端口、服务地址或 Redis 地址。公开仓库只保留 `demo/AutoEnterprise-Seckill/.env.example`，真实配置写在本机 `demo/AutoEnterprise-Seckill/.env`，该文件已被 `.gitignore` 忽略，不应上传 GitHub。

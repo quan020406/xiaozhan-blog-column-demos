@@ -10,6 +10,12 @@
 | --- | --- | --- |
 | 下一代工作流：当 AI 成为我的全职下属 | Spring Boot 高并发秒杀 Demo、AI 工程治理脚本、配套运行素材 | [下一代工作流-当AI成为我的全职下属](./下一代工作流-当AI成为我的全职下属/) |
 
+## 静态动画页
+
+| 主题 | 页面 | iframe 示例 |
+| --- | --- | --- |
+| 第三期：AI Agent 防作弊 CI | [第三期动画辅助理解](./animations/article-03/) | [iframe-snippets.md](./animations/article-03/iframe-snippets.md) |
+
 ## 仓库约定
 
 - 根目录只放仓库总览、通用配置和各专栏目录。

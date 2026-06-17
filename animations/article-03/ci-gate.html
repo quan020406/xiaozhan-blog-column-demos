@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CI 流水线拦截动画</title>
+  <style>
+:root{color-scheme:light;--page:#f6f8fb;--ink:#111827;--muted:#64748b;--line:#cbd5e1;--blue:#2563eb;--red:#dc2626;--green:#16a34a;--amber:#d97706;--violet:#7c3aed}
+*{box-sizing:border-box}body{margin:0;font-family:"Microsoft YaHei","Noto Sans SC","Segoe UI",Arial,sans-serif;background:var(--page);color:var(--ink)}
+main{width:min(1120px,calc(100vw - 28px));margin:0 auto;padding:24px 0 40px}header{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin-bottom:18px}
+h1{margin:0 0 8px;font-size:30px;line-height:1.2;letter-spacing:0}.lead{margin:0;color:var(--muted);line-height:1.7}.controls{display:flex;gap:10px;flex-wrap:wrap}button{min-height:38px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:0 14px;font-weight:700;cursor:pointer}.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.stage{background:#fff;border:1px solid var(--line);border-radius:8px;padding:22px;overflow:hidden}.timeline{position:relative;height:360px}.box{position:absolute;width:170px;min-height:86px;border-radius:8px;border:2px solid var(--line);background:#fff;display:grid;place-items:center;text-align:center;padding:10px;transition:.45s ease;box-shadow:0 10px 24px rgba(15,23,42,.08)}.box strong{display:block;font-size:20px}.box span{display:block;color:var(--muted);font-size:14px;margin-top:6px;line-height:1.45}.box.active{transform:translateY(-8px);border-width:3px}.blue{background:#dbeafe;border-color:var(--blue);color:var(--blue)}.amber{background:#fef3c7;border-color:var(--amber);color:var(--amber)}.red{background:#fee2e2;border-color:var(--red);color:var(--red)}.green{background:#dcfce7;border-color:var(--green);color:var(--green)}.dark{background:#111827;border-color:#111827;color:#facc15}.gray{background:#e5e7eb;border-color:#94a3b8;color:#475569}.arrow{position:absolute;height:4px;background:#334155;transform-origin:left center;transition:.45s ease}.arrow::after{content:"";position:absolute;right:-1px;top:-8px;border-left:16px solid #334155;border-top:10px solid transparent;border-bottom:10px solid transparent}.arrow.dim{background:#cbd5e1}.arrow.dim::after{border-left-color:#cbd5e1}
+.terminal{background:#101828;color:#f8fafc;border-radius:8px;padding:16px;font-family:Consolas,"Courier New",monospace;line-height:1.65;min-height:104px}.terminal .warn{color:#facc15}.note{margin-top:16px;padding:14px 16px;border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:8px;background:#fff;color:#334155;line-height:1.7}.split{display:grid;grid-template-columns:1fr 1fr;gap:18px}.lane{background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px;min-height:380px}.lane h2{margin:0 0 16px}.step{min-height:52px;border:2px solid var(--line);border-radius:8px;margin:0 0 22px;padding:12px 14px;font-weight:800;text-align:center;transition:.4s}.down{height:22px;text-align:center;color:#64748b;margin-top:-17px}.guard-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.guard-column{position:relative;min-height:390px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px}.guard-column h2{margin:0 0 18px}.guard-card{border:2px solid var(--line);border-radius:8px;padding:16px;margin-bottom:20px;transition:.4s}.guard-card strong{display:block;font-size:22px}.guard-card span{display:block;margin-top:6px;color:var(--muted)}.code{background:#101828;color:#f8fafc;border-radius:8px;padding:14px 16px;font-family:Consolas,"Courier New",monospace;line-height:1.7}.embed{margin-top:22px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:18px}.embed textarea{width:100%;min-height:88px;border:1px solid var(--line);border-radius:8px;padding:10px;font-family:Consolas,"Courier New",monospace}
+@media(max-width:760px){header{display:block}.controls{margin-top:14px}.split,.guard-grid{grid-template-columns:1fr}.timeline{height:620px}.box{left:50%!important;transform:translateX(-50%)}.box.active{transform:translate(-50%,-8px)}.arrow{display:none}}
+</style>
+</head>
+<body>
+  <main>
+    <header>
+      <div>
+        <h1>CI 流水线拦截动画</h1>
+        <p class="lead">命中 ALWAYS_TRUE 后，流水线在 Maven 测试前停止。</p>
+      </div>
+      <div class="controls">
+        <button class="primary" id="play">播放</button>
+        <button id="reset">重置</button>
+      </div>
+    </header>
+    
+<section class="stage">
+  <div class="timeline" id="timeline">
+    <div class="box blue" style="left:20px;top:110px" data-step="0"><div><strong>Agent PR</strong><span>提交业务改动</span></div></div>
+    <div class="box amber" style="left:210px;top:110px" data-step="1"><div><strong>完整性审计</strong><span>扫描禁止模式</span></div></div>
+    <div class="box red" style="left:400px;top:110px" data-step="2"><div><strong>ALWAYS_TRUE</strong><span>命中万能断言</span></div></div>
+    <div class="box dark" style="left:590px;top:110px" data-step="3"><div><strong>EXIT_CODE=1</strong><span>阻断流水线</span></div></div>
+    <div class="box gray" style="left:780px;top:110px" data-step="4"><div><strong>Maven 测试</strong><span>不再执行</span></div></div>
+    <div class="arrow" style="left:190px;top:152px;width:36px"></div>
+    <div class="arrow" style="left:380px;top:152px;width:36px"></div>
+    <div class="arrow" style="left:570px;top:152px;width:36px"></div>
+    <div class="arrow" style="left:760px;top:152px;width:36px"></div>
+  </div>
+  <div class="terminal" id="terminal">等待完整性审计输出...</div>
+  <div class="note" id="note">防作弊 CI 的关键不是多跑一个脚本，而是在 Maven 测试之前先确认验收边界没有被削弱。</div>
+</section>
+<script>
+let step=0,timer=null;const boxes=[...document.querySelectorAll('.box')],arrows=[...document.querySelectorAll('.arrow')],term=document.getElementById('terminal'),note=document.getElementById('note');
+function paint(){boxes.forEach((b,i)=>b.classList.toggle('active',i<=step));arrows.forEach((a,i)=>a.classList.toggle('dim',i>=step));if(step<2){term.textContent='等待完整性审计输出...';note.textContent='防作弊 CI 的关键不是多跑一个脚本，而是在 Maven 测试之前先确认验收边界没有被削弱。'}else{term.innerHTML='BrokenTest.java:1 [ALWAYS_TRUE] 禁止万能真断言<br><span class="warn">EXIT_CODE=1</span>';note.textContent='脚本打印文件、行号和规则码，并以非零退出码阻断流水线。'}}function play(){clearInterval(timer);timer=setInterval(()=>{step=Math.min(4,step+1);paint();if(step===4)clearInterval(timer)},700)}function reset(){clearInterval(timer);step=0;paint()}document.getElementById('play').onclick=play;document.getElementById('reset').onclick=reset;paint();
+</script>
+
+    <section class="embed">
+      <strong>iframe 调用</strong>
+      <textarea readonly><iframe src="https://raw.githack.com/quan020406/xiaozhan-blog-column-demos/main/animations/article-03/ci-gate.html" width="100%" height="620" loading="lazy" style="border:0;border-radius:8px;"></iframe></textarea>
+    </section>
+  </main>
+</body>
+</html>
