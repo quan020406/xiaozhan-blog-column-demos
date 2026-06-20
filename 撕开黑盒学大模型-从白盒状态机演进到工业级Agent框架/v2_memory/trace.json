@@ -1,0 +1,116 @@
+{
+  "query": "记忆污染 阈值 Agent",
+  "summary_memory": "user 曾提到：我在写 Agent 专栏，关注 ReAct 状态机。 assistant 曾提到：当前没有可用历史上下文，先按本轮输入回答。 user 曾提到：请记录，第二篇要讨论记忆污染。 assistant 曾提到：先做阈值过滤，再把短期窗口、摘要记忆和长期检索分层处理。 user 曾提到：无关信息：今天午饭吃面。 assistant 曾提到：我会基于当前会话窗口和通过阈值筛选的历史记忆回答。 user 曾提到：继续讨论向量检索阈值。 assistant 曾提到：我会基于当前会话窗口和通过阈值筛选的历史记忆回答。",
+  "recent_messages": [
+    {
+      "role": "user",
+      "content": "如何治理记忆污染？",
+      "user_id": "default"
+    },
+    {
+      "role": "assistant",
+      "content": "先做阈值过滤，再把短期窗口、摘要记忆和长期检索分层处理。",
+      "user_id": "default"
+    },
+    {
+      "role": "user",
+      "content": "噪声信息：午饭、咖啡、天气闲聊。",
+      "user_id": "default"
+    }
+  ],
+  "blind_top_k": [
+    {
+      "score": 0.354,
+      "record": {
+        "record_id": 9,
+        "user_id": "default",
+        "role": "user",
+        "content": "如何治理记忆污染？"
+      }
+    },
+    {
+      "score": 0.277,
+      "record": {
+        "record_id": 3,
+        "user_id": "default",
+        "role": "user",
+        "content": "请记录，第二篇要讨论记忆污染。"
+      }
+    },
+    {
+      "score": 0.211,
+      "record": {
+        "record_id": 7,
+        "user_id": "default",
+        "role": "user",
+        "content": "继续讨论向量检索阈值。"
+      }
+    },
+    {
+      "score": 0.204,
+      "record": {
+        "record_id": 4,
+        "user_id": "default",
+        "role": "assistant",
+        "content": "先做阈值过滤，再把短期窗口、摘要记忆和长期检索分层处理。"
+      }
+    },
+    {
+      "score": 0.204,
+      "record": {
+        "record_id": 6,
+        "user_id": "default",
+        "role": "assistant",
+        "content": "我会基于当前会话窗口和通过阈值筛选的历史记忆回答。"
+      }
+    },
+    {
+      "score": 0.204,
+      "record": {
+        "record_id": 8,
+        "user_id": "default",
+        "role": "assistant",
+        "content": "我会基于当前会话窗口和通过阈值筛选的历史记忆回答。"
+      }
+    },
+    {
+      "score": 0.204,
+      "record": {
+        "record_id": 10,
+        "user_id": "default",
+        "role": "assistant",
+        "content": "先做阈值过滤，再把短期窗口、摘要记忆和长期检索分层处理。"
+      }
+    },
+    {
+      "score": 0.083,
+      "record": {
+        "record_id": 1,
+        "user_id": "default",
+        "role": "user",
+        "content": "我在写 Agent 专栏，关注 ReAct 状态机。"
+      }
+    }
+  ],
+  "thresholded": [
+    {
+      "score": 0.354,
+      "record": {
+        "record_id": 9,
+        "user_id": "default",
+        "role": "user",
+        "content": "如何治理记忆污染？"
+      }
+    },
+    {
+      "score": 0.277,
+      "record": {
+        "record_id": 3,
+        "user_id": "default",
+        "role": "user",
+        "content": "请记录，第二篇要讨论记忆污染。"
+      }
+    }
+  ],
+  "guest_records_after_erase": []
+}

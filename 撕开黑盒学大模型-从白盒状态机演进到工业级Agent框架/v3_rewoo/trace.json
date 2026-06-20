@@ -1,0 +1,201 @@
+{
+  "plan_text": "E1: fetch_price[GPU]\nE2: fetch_weather[杭州]\nE3: unstable_inventory[GPU]\nE4: summarize[结合 #E1、#E2、#E3 给出出门采购建议]",
+  "plan": [
+    {
+      "step_id": "E1",
+      "tool": "fetch_price",
+      "argument": "GPU"
+    },
+    {
+      "step_id": "E2",
+      "tool": "fetch_weather",
+      "argument": "杭州"
+    },
+    {
+      "step_id": "E3",
+      "tool": "unstable_inventory",
+      "argument": "GPU"
+    },
+    {
+      "step_id": "E4",
+      "tool": "summarize",
+      "argument": "结合 #E1、#E2、#E3 给出出门采购建议"
+    }
+  ],
+  "runs": [
+    {
+      "label": "serial ReAct-like execution",
+      "elapsed": 1.644,
+      "results": {
+        "E1": "GPU 预算价格区间已获取",
+        "E2": "杭州 小雨，建议带伞",
+        "E3": "ERROR: unstable_inventory timed out after 0.6s",
+        "E4": "综合结论：结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
+      }
+    },
+    {
+      "label": "parallel ReWOO-like execution",
+      "elapsed": 0.806,
+      "results": {
+        "E1": "GPU 预算价格区间已获取",
+        "E2": "杭州 小雨，建议带伞",
+        "E3": "ERROR: unstable_inventory timed out after 0.6s",
+        "E4": "综合结论：结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "runner": "serial",
+      "step_id": "E1",
+      "event": "start",
+      "timestamp": 0.0,
+      "payload": {
+        "tool": "fetch_price",
+        "argument": "GPU"
+      }
+    },
+    {
+      "runner": "serial",
+      "step_id": "E1",
+      "event": "success",
+      "timestamp": 0.4124,
+      "payload": {
+        "value": "GPU 预算价格区间已获取"
+      }
+    },
+    {
+      "runner": "serial",
+      "step_id": "E2",
+      "event": "start",
+      "timestamp": 0.4124,
+      "payload": {
+        "tool": "fetch_weather",
+        "argument": "杭州"
+      }
+    },
+    {
+      "runner": "serial",
+      "step_id": "E2",
+      "event": "success",
+      "timestamp": 0.8207,
+      "payload": {
+        "value": "杭州 小雨，建议带伞"
+      }
+    },
+    {
+      "runner": "serial",
+      "step_id": "E3",
+      "event": "start",
+      "timestamp": 0.8208,
+      "payload": {
+        "tool": "unstable_inventory",
+        "argument": "GPU"
+      }
+    },
+    {
+      "runner": "serial",
+      "step_id": "E3",
+      "event": "timeout",
+      "timestamp": 1.4361,
+      "payload": {
+        "value": "ERROR: unstable_inventory timed out after 0.6s"
+      }
+    },
+    {
+      "runner": "serial",
+      "step_id": "E4",
+      "event": "start",
+      "timestamp": 1.4361,
+      "payload": {
+        "tool": "summarize",
+        "argument": "结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
+      }
+    },
+    {
+      "runner": "serial",
+      "step_id": "E4",
+      "event": "success",
+      "timestamp": 1.6438,
+      "payload": {
+        "value": "综合结论：结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
+      }
+    },
+    {
+      "runner": "parallel",
+      "step_id": "E1",
+      "event": "start",
+      "timestamp": 1.6439,
+      "payload": {
+        "tool": "fetch_price",
+        "argument": "GPU"
+      }
+    },
+    {
+      "runner": "parallel",
+      "step_id": "E2",
+      "event": "start",
+      "timestamp": 1.6439,
+      "payload": {
+        "tool": "fetch_weather",
+        "argument": "杭州"
+      }
+    },
+    {
+      "runner": "parallel",
+      "step_id": "E3",
+      "event": "start",
+      "timestamp": 1.6439,
+      "payload": {
+        "tool": "unstable_inventory",
+        "argument": "GPU"
+      }
+    },
+    {
+      "runner": "parallel",
+      "step_id": "E1",
+      "event": "success",
+      "timestamp": 2.0442,
+      "payload": {
+        "value": "GPU 预算价格区间已获取"
+      }
+    },
+    {
+      "runner": "parallel",
+      "step_id": "E2",
+      "event": "success",
+      "timestamp": 2.0442,
+      "payload": {
+        "value": "杭州 小雨，建议带伞"
+      }
+    },
+    {
+      "runner": "parallel",
+      "step_id": "E3",
+      "event": "timeout",
+      "timestamp": 2.2431,
+      "payload": {
+        "value": "ERROR: unstable_inventory timed out after 0.6s"
+      }
+    },
+    {
+      "runner": "parallel",
+      "step_id": "E4",
+      "event": "start",
+      "timestamp": 2.2432,
+      "payload": {
+        "tool": "summarize",
+        "argument": "结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
+      }
+    },
+    {
+      "runner": "parallel",
+      "step_id": "E4",
+      "event": "success",
+      "timestamp": 2.4495,
+      "payload": {
+        "value": "综合结论：结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
+      }
+    }
+  ]
+}

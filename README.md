@@ -9,6 +9,7 @@
 | 专栏 | 内容 | 入口 |
 | --- | --- | --- |
 | 下一代工作流：当 AI 成为我的全职下属 | Spring Boot 高并发秒杀 Demo、AI 工程治理脚本、配套运行素材 | [下一代工作流-当AI成为我的全职下属](./下一代工作流-当AI成为我的全职下属/) |
+| 撕开黑盒学大模型：从白盒状态机演进到工业级 Agent 框架 | 纯 Python ReAct、记忆治理、ReWOO 异步调度、LangChain/LangGraph 对照骨架 | [撕开黑盒学大模型-从白盒状态机演进到工业级Agent框架](./撕开黑盒学大模型-从白盒状态机演进到工业级Agent框架/) |
 
 ## 静态动画页
 
@@ -36,6 +37,19 @@ git sparse-checkout set "下一代工作流-当AI成为我的全职下属/demo/A
 如果后续想切换到另一个目录，重新执行 `git sparse-checkout set "<目标目录>"` 即可。
 
 ## 当前可用 Demo
+
+### Mini Agent Lab
+
+位置：[撕开黑盒学大模型-从白盒状态机演进到工业级Agent框架](./撕开黑盒学大模型-从白盒状态机演进到工业级Agent框架/)
+
+这是一个面向 LLM Agent 底层机制拆解的 Python 示例工程，用于演示：
+
+- 纯 Python ReAct 状态机与函数自省工具注册
+- 长短期记忆分层治理与相似度阈值过滤
+- 简化版 ReWOO / DAG 异步并发调度
+- 手写实现到 LangChain / LangGraph 的迁移映射
+
+运行前请进入 `撕开黑盒学大模型-从白盒状态机演进到工业级Agent框架` 查看专栏 README。
 
 ### AutoEnterprise-Seckill
 

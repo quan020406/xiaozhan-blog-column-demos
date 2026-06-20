@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>v4 状态图对照可视化</title>
+  <style>
+    body { margin: 0; background: #f8fafc; color: #111827; font-family: "Microsoft YaHei", Arial, sans-serif; }
+    main { width: min(980px, calc(100vw - 32px)); margin: 0 auto; padding: 32px 0; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { color: #64748b; line-height: 1.7; }
+    .node { background: #fff; border: 1px solid #cbd5e1; border-left: 6px solid #7c3aed; border-radius: 8px; padding: 14px; margin: 14px 0; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #f1f5f9; padding: 10px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>v4 状态图对照可视化</h1>
+    <p>先运行 <code>python main.py</code> 生成 <code>trace.json</code>。本页展示节点执行顺序和每个节点后的状态快照。</p>
+    <div id="root"></div>
+  </main>
+  <script>
+    async function loadTrace() {
+      try {
+        const response = await fetch("./trace.json", { cache: "no-store" });
+        return await response.json();
+      } catch (error) {
+        return { error: "未读取到 trace.json，请先运行 python main.py。" };
+      }
+    }
+    loadTrace().then(data => {
+      const root = document.querySelector("#root");
+      if (data.error) {
+        root.innerHTML = `<p>${data.error}</p>`;
+        return;
+      }
+      root.innerHTML = data.events.map((event, index) => `
+        <section class="node">
+          <h2>${index + 1}. ${event.node}</h2>
+          <pre>${JSON.stringify(event.state, null, 2)}</pre>
+        </section>
+      `).join("");
+    });
+  </script>
+</body>
+</html>

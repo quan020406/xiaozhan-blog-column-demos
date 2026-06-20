@@ -1,0 +1,40 @@
+{
+  "events": [
+    {
+      "node": "call_model",
+      "state": {
+        "messages": [
+          "user: 计算预算",
+          "model: 需要调用 calculator 工具"
+        ],
+        "next": "tool"
+      }
+    },
+    {
+      "node": "call_tool",
+      "state": {
+        "messages": [
+          "user: 计算预算",
+          "model: 需要调用 calculator 工具",
+          "tool: calculator 返回 48.0"
+        ],
+        "next": "final",
+        "tool_result": "48.0"
+      }
+    },
+    {
+      "node": "finalize",
+      "state": {
+        "messages": [
+          "user: 计算预算",
+          "model: 需要调用 calculator 工具",
+          "tool: calculator 返回 48.0",
+          "final: 根据工具结果生成最终回答"
+        ],
+        "next": "final",
+        "tool_result": "48.0",
+        "answer": "预算结果是 48.0"
+      }
+    }
+  ]
+}

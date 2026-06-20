@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>v3 ReWOO 调度时间线</title>
+  <style>
+    body { margin: 0; background: #f8fafc; color: #111827; font-family: "Microsoft YaHei", Arial, sans-serif; }
+    main { width: min(1080px, calc(100vw - 32px)); margin: 0 auto; padding: 32px 0; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { color: #64748b; line-height: 1.7; }
+    .panel { background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; margin-top: 16px; }
+    .bar { margin: 10px 0; padding: 9px 12px; border-radius: 6px; background: #dbeafe; border-left: 6px solid #2563eb; }
+    .parallel { background: #dcfce7; border-left-color: #16a34a; }
+    .timeout { background: #fee2e2; border-left-color: #dc2626; }
+    pre { white-space: pre-wrap; background: #f1f5f9; padding: 10px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>v3 ReWOO 调度时间线</h1>
+    <p>先运行 <code>python benchmark.py</code> 生成 <code>trace.json</code>。本页展示串行与并行调度事件。</p>
+    <div id="root"></div>
+  </main>
+  <script>
+    async function loadTrace() {
+      try {
+        const response = await fetch("./trace.json", { cache: "no-store" });
+        return await response.json();
+      } catch (error) {
+        return { error: "未读取到 trace.json，请先运行 python benchmark.py。" };
+      }
+    }
+    loadTrace().then(data => {
+      const root = document.querySelector("#root");
+      if (data.error) {
+        root.innerHTML = `<p>${data.error}</p>`;
+        return;
+      }
+      const runs = data.runs.map(run => `<div><strong>${run.label}</strong>: ${run.elapsed}s</div>`).join("");
+      const events = data.timeline.map(event => {
+        const cls = `${event.runner === "parallel" ? "parallel" : ""} ${event.event === "timeout" ? "timeout" : ""}`;
+        return `<div class="bar ${cls}">
+          <strong>${event.timestamp}s · ${event.runner} · ${event.step_id} · ${event.event}</strong>
+          <div>${JSON.stringify(event.payload)}</div>
+        </div>`;
+      }).join("");
+      root.innerHTML = `
+        <section class="panel"><h2>计划文本</h2><pre>${data.plan_text}</pre></section>
+        <section class="panel"><h2>耗时对比</h2>${runs}</section>
+        <section class="panel"><h2>执行时间线</h2>${events}</section>
+      `;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>v1 ReAct 状态流转可视化</title>
+  <style>
+    body { margin: 0; background: #f8fafc; color: #111827; font-family: "Microsoft YaHei", Arial, sans-serif; }
+    main { width: min(980px, calc(100vw - 32px)); margin: 0 auto; padding: 32px 0; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { color: #64748b; line-height: 1.7; }
+    .timeline { display: grid; gap: 12px; margin-top: 24px; }
+    .event { border: 1px solid #cbd5e1; border-left: 6px solid #2563eb; border-radius: 8px; background: #fff; padding: 14px 16px; }
+    .phase { font-weight: 700; color: #1d4ed8; }
+    pre { white-space: pre-wrap; word-break: break-word; background: #f1f5f9; padding: 10px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>v1 ReAct 状态流转可视化</h1>
+    <p>先运行 <code>python main.py</code> 生成 <code>trace.json</code>，本页会展示 Thought、Action、Observation 与 Final 的逐步流转。</p>
+    <div id="timeline" class="timeline"></div>
+  </main>
+  <script>
+    async function loadTrace() {
+      try {
+        const response = await fetch("./trace.json", { cache: "no-store" });
+        return await response.json();
+      } catch (error) {
+        return [{ step: 0, phase: "missing_trace", payload: { message: "未读取到 trace.json，请先运行 python main.py。" } }];
+      }
+    }
+
+    loadTrace().then(events => {
+      const root = document.querySelector("#timeline");
+      root.innerHTML = events.map(event => `
+        <section class="event">
+          <div class="phase">step ${event.step} · ${event.phase}</div>
+          <pre>${JSON.stringify(event.payload, null, 2)}</pre>
+        </section>
+      `).join("");
+    });
+  </script>
+</body>
+</html>

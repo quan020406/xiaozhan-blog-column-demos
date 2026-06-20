@@ -1,0 +1,67 @@
+[
+  {
+    "step": 0,
+    "phase": "prompt",
+    "payload": {
+      "text": "You are a deterministic ReAct agent. Use Thought, Action, Observation, Final.\nAvailable tools:\n- calculator({'expression': 'str'}): Evaluate a small arithmetic expression.\n- weather({'city': 'str'}): Return a deterministic weather report for a city.\nTask: 计算预算，并根据杭州天气判断是否适合出门。"
+    }
+  },
+  {
+    "step": 1,
+    "phase": "model_output",
+    "payload": {
+      "text": "Thought: 先计算预算。\nAction: calculator[128 / 4 + 16]"
+    }
+  },
+  {
+    "step": 1,
+    "phase": "tool_call",
+    "payload": {
+      "name": "calculator",
+      "argument": "128 / 4 + 16"
+    }
+  },
+  {
+    "step": 1,
+    "phase": "observation",
+    "payload": {
+      "text": "48.0"
+    }
+  },
+  {
+    "step": 2,
+    "phase": "model_output",
+    "payload": {
+      "text": "Thought: 数值已得到，再查询目的地天气。\nAction: weather[杭州]"
+    }
+  },
+  {
+    "step": 2,
+    "phase": "tool_call",
+    "payload": {
+      "name": "weather",
+      "argument": "杭州"
+    }
+  },
+  {
+    "step": 2,
+    "phase": "observation",
+    "payload": {
+      "text": "小雨，气温 23 度，建议带伞。"
+    }
+  },
+  {
+    "step": 3,
+    "phase": "model_output",
+    "payload": {
+      "text": "Thought: 工具信息足够。\nFinal: 预算结果是 48.0，杭州小雨，出门建议带伞。"
+    }
+  },
+  {
+    "step": 3,
+    "phase": "final",
+    "payload": {
+      "answer": "预算结果是 48.0，杭州小雨，出门建议带伞。"
+    }
+  }
+]

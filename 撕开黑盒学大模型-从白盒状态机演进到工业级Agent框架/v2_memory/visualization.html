@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>v2 记忆治理可视化</title>
+  <style>
+    body { margin: 0; background: #f8fafc; color: #111827; font-family: "Microsoft YaHei", Arial, sans-serif; }
+    main { width: min(1080px, calc(100vw - 32px)); margin: 0 auto; padding: 32px 0; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { color: #64748b; line-height: 1.7; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 22px; }
+    .panel { background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 16px; }
+    .record { margin: 10px 0; padding: 10px; background: #f1f5f9; border-radius: 6px; }
+    .score { color: #2563eb; font-weight: 700; }
+    .danger { color: #b91c1c; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>v2 记忆治理可视化</h1>
+    <p>先运行 <code>python main.py</code> 生成 <code>trace.json</code>。本页展示无阈值 Top-K 与阈值过滤之间的差异。</p>
+    <div id="root"></div>
+  </main>
+  <script>
+    async function loadTrace() {
+      try {
+        const response = await fetch("./trace.json", { cache: "no-store" });
+        return await response.json();
+      } catch (error) {
+        return { error: "未读取到 trace.json，请先运行 python main.py。" };
+      }
+    }
+    function listRecords(items) {
+      if (!items || items.length === 0) return "<div class='record'>无记录</div>";
+      return items.map(item => `
+        <div class="record">
+          <div class="score">score ${item.score}</div>
+          <div>${item.record.content}</div>
+        </div>
+      `).join("");
+    }
+    loadTrace().then(data => {
+      if (data.error) {
+        document.querySelector("#root").innerHTML = `<p class="danger">${data.error}</p>`;
+        return;
+      }
+      document.querySelector("#root").innerHTML = `
+        <div class="grid">
+          <section class="panel">
+            <h2>查询</h2>
+            <p>${data.query}</p>
+          </section>
+          <section class="panel">
+            <h2>摘要记忆</h2>
+            <p>${data.summary_memory || "无"}</p>
+          </section>
+          <section class="panel">
+            <h2>短期窗口</h2>
+            ${data.recent_messages.map(message => `<div class="record">${message.role}: ${message.content}</div>`).join("")}
+          </section>
+          <section class="panel">
+            <h2>无阈值 Top-K</h2>
+            ${listRecords(data.blind_top_k)}
+          </section>
+          <section class="panel">
+            <h2>阈值过滤后</h2>
+            ${listRecords(data.thresholded)}
+          </section>
+          <section class="panel">
+            <h2>隐私擦除验证</h2>
+            <p>${data.guest_records_after_erase.length === 0 ? "guest 用户记录已擦除" : "仍有 guest 记录残留"}</p>
+          </section>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>
