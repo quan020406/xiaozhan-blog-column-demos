@@ -5,12 +5,13 @@
 ## 目录
 
 ```text
-docs/          # 6 篇专栏文章的 Markdown 写作骨架
-v1_react/      # 纯 Python ReAct 循环、函数自省注册、trace 可视化
-v2_memory/     # 长短期记忆分层治理、污染对比、擦除验证
-v3_rewoo/      # 简化版 ReWOO / DAG 异步调度、超时 Observation、时间线
-v4_langchain/  # LangChain / LangGraph 对照迁移与无依赖状态图
-scripts/       # 专栏目录级检查脚本
+docs/           # 本地写作稿目录，已在仓库 ignore 中排除
+assets/images/  # 专栏封面、文章配图和生产边界图
+v1_react/       # 纯 Python ReAct 循环、函数自省注册、trace 可视化
+v2_memory/      # 长短期记忆分层治理、污染对比、擦除验证
+v3_rewoo/       # 简化版 ReWOO / DAG 异步调度、超时 Observation、时间线
+v4_langchain/   # LangChain / LangGraph 对照迁移与无依赖状态图
+scripts/        # 专栏目录级检查脚本
 ```
 
 ## 专栏路线
@@ -41,9 +42,20 @@ python scripts\check_portability.py
 
 `v4_langchain/` 中保留可选依赖导入边界。未安装 LangChain / LangGraph 时，可以先运行无依赖的 `handmade_graph.py` 对照版本；安装框架后再接入真实模型与 checkpointer。
 
+## 配套素材
+
+公开仓库保留可复现的文章配图和生成脚本：
+
+- `assets/images/series-cover.png`
+- `assets/images/article-01-react-trace.png`
+- `assets/images/article-02-memory-governance.png`
+- `assets/images/article-03-rewoo-timeline.png`
+- `assets/images/article-05-production-boundary.png`
+- `scripts/generate_article_05_production_boundary.py`
+
 ## 写作约定
 
-- 文章正文放在 `docs/`，代码只保留读者复现实验需要的最小闭环。
+- 文章正文放在本地 `docs/`，该目录不上传 GitHub；公开仓库只保留读者复现实验需要的最小闭环。
 - 示例默认使用 `temperature=0.0` 的确定性叙事，不在代码中硬编码真实模型 Key。
 - 文中的实验数据以本机实际运行结果为准，不直接复用未复现的耗时、成功率或吞吐量。
 - 生产级能力只在第 4、5 篇展开，前三篇刻意控制复杂度，优先让状态流转可观察。

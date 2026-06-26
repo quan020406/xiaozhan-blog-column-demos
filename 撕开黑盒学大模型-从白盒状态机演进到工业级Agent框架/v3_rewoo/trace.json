@@ -25,7 +25,7 @@
   "runs": [
     {
       "label": "serial ReAct-like execution",
-      "elapsed": 1.644,
+      "elapsed": 1.632,
       "results": {
         "E1": "GPU 预算价格区间已获取",
         "E2": "杭州 小雨，建议带伞",
@@ -35,7 +35,7 @@
     },
     {
       "label": "parallel ReWOO-like execution",
-      "elapsed": 0.806,
+      "elapsed": 0.809,
       "results": {
         "E1": "GPU 预算价格区间已获取",
         "E2": "杭州 小雨，建议带伞",
@@ -59,7 +59,7 @@
       "runner": "serial",
       "step_id": "E1",
       "event": "success",
-      "timestamp": 0.4124,
+      "timestamp": 0.4135,
       "payload": {
         "value": "GPU 预算价格区间已获取"
       }
@@ -68,7 +68,7 @@
       "runner": "serial",
       "step_id": "E2",
       "event": "start",
-      "timestamp": 0.4124,
+      "timestamp": 0.4135,
       "payload": {
         "tool": "fetch_weather",
         "argument": "杭州"
@@ -78,7 +78,7 @@
       "runner": "serial",
       "step_id": "E2",
       "event": "success",
-      "timestamp": 0.8207,
+      "timestamp": 0.8178,
       "payload": {
         "value": "杭州 小雨，建议带伞"
       }
@@ -87,7 +87,7 @@
       "runner": "serial",
       "step_id": "E3",
       "event": "start",
-      "timestamp": 0.8208,
+      "timestamp": 0.8178,
       "payload": {
         "tool": "unstable_inventory",
         "argument": "GPU"
@@ -97,7 +97,7 @@
       "runner": "serial",
       "step_id": "E3",
       "event": "timeout",
-      "timestamp": 1.4361,
+      "timestamp": 1.4285,
       "payload": {
         "value": "ERROR: unstable_inventory timed out after 0.6s"
       }
@@ -106,7 +106,7 @@
       "runner": "serial",
       "step_id": "E4",
       "event": "start",
-      "timestamp": 1.4361,
+      "timestamp": 1.4285,
       "payload": {
         "tool": "summarize",
         "argument": "结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
@@ -116,7 +116,7 @@
       "runner": "serial",
       "step_id": "E4",
       "event": "success",
-      "timestamp": 1.6438,
+      "timestamp": 1.6325,
       "payload": {
         "value": "综合结论：结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
       }
@@ -125,7 +125,7 @@
       "runner": "parallel",
       "step_id": "E1",
       "event": "start",
-      "timestamp": 1.6439,
+      "timestamp": 1.6326,
       "payload": {
         "tool": "fetch_price",
         "argument": "GPU"
@@ -135,7 +135,7 @@
       "runner": "parallel",
       "step_id": "E2",
       "event": "start",
-      "timestamp": 1.6439,
+      "timestamp": 1.6326,
       "payload": {
         "tool": "fetch_weather",
         "argument": "杭州"
@@ -145,7 +145,7 @@
       "runner": "parallel",
       "step_id": "E3",
       "event": "start",
-      "timestamp": 1.6439,
+      "timestamp": 1.6326,
       "payload": {
         "tool": "unstable_inventory",
         "argument": "GPU"
@@ -155,7 +155,7 @@
       "runner": "parallel",
       "step_id": "E1",
       "event": "success",
-      "timestamp": 2.0442,
+      "timestamp": 2.0334,
       "payload": {
         "value": "GPU 预算价格区间已获取"
       }
@@ -164,7 +164,7 @@
       "runner": "parallel",
       "step_id": "E2",
       "event": "success",
-      "timestamp": 2.0442,
+      "timestamp": 2.0335,
       "payload": {
         "value": "杭州 小雨，建议带伞"
       }
@@ -173,7 +173,7 @@
       "runner": "parallel",
       "step_id": "E3",
       "event": "timeout",
-      "timestamp": 2.2431,
+      "timestamp": 2.2366,
       "payload": {
         "value": "ERROR: unstable_inventory timed out after 0.6s"
       }
@@ -182,7 +182,7 @@
       "runner": "parallel",
       "step_id": "E4",
       "event": "start",
-      "timestamp": 2.2432,
+      "timestamp": 2.2369,
       "payload": {
         "tool": "summarize",
         "argument": "结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
@@ -192,7 +192,7 @@
       "runner": "parallel",
       "step_id": "E4",
       "event": "success",
-      "timestamp": 2.4495,
+      "timestamp": 2.4415,
       "payload": {
         "value": "综合结论：结合 GPU 预算价格区间已获取、杭州 小雨，建议带伞、ERROR: unstable_inventory timed out after 0.6s 给出出门采购建议"
       }

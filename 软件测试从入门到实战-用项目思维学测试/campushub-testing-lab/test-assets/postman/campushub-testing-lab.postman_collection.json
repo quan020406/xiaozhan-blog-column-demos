@@ -1,0 +1,52 @@
+{
+  "info": {
+    "name": "CampusHub Testing Lab",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/health"
+      }
+    },
+    {
+      "name": "Login as student",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\":\"student01\",\"password\":\"campus123\"}"
+        },
+        "url": "{{baseUrl}}/api/auth/login"
+      }
+    },
+    {
+      "name": "List activities",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/activities?username=student01"
+      }
+    },
+    {
+      "name": "Search books",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/books?keyword=test"
+      }
+    }
+  ]
+}

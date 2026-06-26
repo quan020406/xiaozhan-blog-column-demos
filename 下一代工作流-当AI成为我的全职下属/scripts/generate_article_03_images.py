@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -19,8 +20,9 @@ FONT_CANDIDATES = (
 
 def font_dirs() -> list[Path]:
     roots = [Path.home() / ".fonts", Path("/usr/share/fonts"), Path("/Library/Fonts")]
-    system_root = Path(__import__("os").environ.get("SystemRoot", r"C:\Windows"))
-    roots.append(system_root / "Fonts")
+    system_root = os.environ.get("SystemRoot")
+    if system_root:
+        roots.append(Path(system_root) / "Fonts")
     return roots
 
 

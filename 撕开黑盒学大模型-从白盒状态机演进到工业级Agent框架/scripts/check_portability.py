@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SKIP_PARTS = {".git", "__pycache__", ".pytest_cache", "target", "dist"}
+SKIP_PARTS = {".git", "__pycache__", ".pytest_cache", "target", "dist", "docs"}
 TEXT_SUFFIXES = {".md", ".py", ".json", ".yml", ".yaml", ".txt", ".toml"}
 RULES = {
     "windows_absolute_path": re.compile(r"(?i)\b[a-z]:[\\/]"),
@@ -36,4 +36,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

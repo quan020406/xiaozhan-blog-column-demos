@@ -20,6 +20,15 @@ scripts/                        # 专栏目录级检查脚本
 - [只读门禁权限边界动画](../animations/article-03/readonly-gate.html)
 - [iframe 调用片段](../animations/article-03/iframe-snippets.md)
 
+近期补充的文章配图位于 `assets/images/`：
+
+- `article-04-architecture.png`
+- `article-04-solid-components.png`
+- `article-05-workflow.png`
+- `article-05-five-gates.png`
+
+这些图片由 `scripts/generate_article_04_images.py` 和 `scripts/generate_article_05_images.py` 生成，便于文章发布前复现素材来源。
+
 ## 运行 Demo
 
 本仓库不在代码里写死应用端口、服务地址或 Redis 地址。公开仓库只保留 `demo/AutoEnterprise-Seckill/.env.example`，真实配置写在本机 `demo/AutoEnterprise-Seckill/.env`，该文件已被 `.gitignore` 忽略，不应上传 GitHub。

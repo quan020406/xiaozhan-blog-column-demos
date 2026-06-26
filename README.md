@@ -10,6 +10,7 @@
 | --- | --- | --- |
 | 下一代工作流：当 AI 成为我的全职下属 | Spring Boot 高并发秒杀 Demo、AI 工程治理脚本、配套运行素材 | [下一代工作流-当AI成为我的全职下属](./下一代工作流-当AI成为我的全职下属/) |
 | 撕开黑盒学大模型：从白盒状态机演进到工业级 Agent 框架 | 纯 Python ReAct、记忆治理、ReWOO 异步调度、LangChain/LangGraph 对照骨架 | [撕开黑盒学大模型-从白盒状态机演进到工业级Agent框架](./撕开黑盒学大模型-从白盒状态机演进到工业级Agent框架/) |
+| 软件测试从入门到实战：用项目思维学测试 | CampusHub 测试教学项目、文章草稿、测试素材、接口/UI/性能测试练习入口 | [软件测试从入门到实战-用项目思维学测试](./软件测试从入门到实战-用项目思维学测试/) |
 
 ## 静态动画页
 
@@ -63,3 +64,16 @@ git sparse-checkout set "下一代工作流-当AI成为我的全职下属/demo/A
 - 面向 AI Agent 的上下文裁剪、提交审计和防作弊检查
 
 运行前请进入对应 Demo 目录查看专栏 README 和 Demo README。
+
+### CampusHub Testing Lab
+
+位置：[软件测试从入门到实战-用项目思维学测试/campushub-testing-lab](./软件测试从入门到实战-用项目思维学测试/campushub-testing-lab/)
+
+这是一个面向软件测试学习路径的 Spring Boot + Vue 教学项目，用于演示：
+
+- CampusHub 校园服务协作平台的需求、数据字典和接口契约
+- 登录、活动报名、BookNest 图书借阅和后台审核等测试场景
+- 手工测试用例、Bug 报告、Postman、Selenium 和 JMeter 示例素材
+- 面向专栏文章的结构检查、发布检查和项目化学习路线
+
+运行前请进入 `软件测试从入门到实战-用项目思维学测试` 查看专栏 README，再进入 `campushub-testing-lab` 查看工程启动说明。
