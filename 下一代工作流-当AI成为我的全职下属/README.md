@@ -5,7 +5,6 @@
 ## 目录
 
 ```text
-assets/images/                  # 专栏封面和 Demo 配套素材
 demo/AutoEnterprise-Seckill/   # Spring Boot + MyBatis-Plus + Redisson Demo
 scripts/                        # 专栏目录级检查脚本
 ```
@@ -20,14 +19,7 @@ scripts/                        # 专栏目录级检查脚本
 - [只读门禁权限边界动画](../animations/article-03/readonly-gate.html)
 - [iframe 调用片段](../animations/article-03/iframe-snippets.md)
 
-近期补充的文章配图位于 `assets/images/`：
-
-- `article-04-architecture.png`
-- `article-04-solid-components.png`
-- `article-05-workflow.png`
-- `article-05-five-gates.png`
-
-这些图片由 `scripts/generate_article_04_images.py` 和 `scripts/generate_article_05_images.py` 生成，便于文章发布前复现素材来源。
+文章配图和封面素材只保留在本地 `assets/images/`，不上传 GitHub。生成脚本保留在 `scripts/`，便于本地复现素材来源。
 
 ## 运行 Demo
 

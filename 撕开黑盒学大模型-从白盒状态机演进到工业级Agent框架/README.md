@@ -6,7 +6,7 @@
 
 ```text
 docs/           # 本地写作稿目录，已在仓库 ignore 中排除
-assets/images/  # 专栏封面、文章配图和生产边界图
+assets/images/  # 本地专栏封面、文章配图和生产边界图，已在仓库 ignore 中排除
 v1_react/       # 纯 Python ReAct 循环、函数自省注册、trace 可视化
 v2_memory/      # 长短期记忆分层治理、污染对比、擦除验证
 v3_rewoo/       # 简化版 ReWOO / DAG 异步调度、超时 Observation、时间线
@@ -44,14 +44,7 @@ python scripts\check_portability.py
 
 ## 配套素材
 
-公开仓库保留可复现的文章配图和生成脚本：
-
-- `assets/images/series-cover.png`
-- `assets/images/article-01-react-trace.png`
-- `assets/images/article-02-memory-governance.png`
-- `assets/images/article-03-rewoo-timeline.png`
-- `assets/images/article-05-production-boundary.png`
-- `scripts/generate_article_05_production_boundary.py`
+文章配图和封面素材只保留在本地 `assets/images/`，不上传 GitHub。公开仓库保留生成脚本，例如 `scripts/generate_article_05_production_boundary.py`，便于需要时在本地复现素材。
 
 ## 写作约定
 

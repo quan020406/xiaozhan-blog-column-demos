@@ -23,10 +23,10 @@
 ## 当前目录边界
 
 ```text
-articles/                   # 可发布文章草稿和正式正文
-assets/images/              # 专栏封面、文章配图和可视化素材
+articles/                   # 本地可发布文章草稿和正式正文，不上传 GitHub
+assets/images/              # 本地专栏封面、文章配图和可视化素材，不上传 GitHub
 case-project/               # 贯穿项目候选、需求池和测试素材
-docs/                       # 专栏规划、发布检查和写作说明
+docs/                       # 本地专栏规划、发布检查和写作说明，不上传 GitHub
 scripts/                    # 专栏结构、禁用案例和可移植性检查脚本
 templates/                  # 后续文章统一模板
 ```
@@ -100,5 +100,6 @@ python scripts\check_column.py
 
 - 发布、提交、推送前先检查 `git status`，确认只包含本任务相关文件。
 - 不把本地校准材料、临时输出、密钥文件、缓存目录或生成噪声纳入提交。
+- 不上传任何专栏 `docs/`、`articles/` 或 `assets/images/` 内容；这些目录只作为本地写作与素材工作区。
 - GitHub 共享内容必须去除本机路径、私有配置、真实个人信息和不可复现结论。
 - 除非用户明确要求，不自动提交、不自动打 tag、不自动推送。

@@ -14,17 +14,17 @@
 ## 目录结构
 
 ```text
-articles/                   # 可发布文章草稿和正式正文
-assets/images/              # 专栏封面、文章配图和可视化素材
+articles/                   # 本地可发布文章草稿和正式正文，不上传 GitHub
+assets/images/              # 本地专栏封面、文章配图和可视化素材，不上传 GitHub
 case-project/               # 贯穿项目候选、需求池和测试素材
-docs/                       # 专栏规划、发布检查和写作说明
+docs/                       # 本地专栏规划、发布检查和写作说明，不上传 GitHub
 scripts/                    # 专栏结构、禁用案例和可移植性检查脚本
 templates/                  # 后续文章统一模板
 ```
 
 ## 贯穿项目
 
-候选方案见 [贯穿项目方案对比](./docs/00-贯穿项目方案.md)。当前推荐使用 CampusHub，它包含账号登录、活动报名、场地预约、设备借用、消息通知和后台审核等模块，足够覆盖测试基础、用例设计、Bug 管理、自动化和性能测试。
+当前推荐使用 CampusHub，它包含账号登录、活动报名、场地预约、设备借用、消息通知和后台审核等模块，足够覆盖测试基础、用例设计、Bug 管理、自动化和性能测试。贯穿项目候选和专栏规划文档保留在本地 `docs/`，不上传 GitHub。
 
 ## 发布路线
 
@@ -38,14 +38,7 @@ templates/                  # 后续文章统一模板
 
 ## 当前初始化内容
 
-- [专栏完整规划](./docs/00-专栏规划.md)
-- [贯穿项目方案对比](./docs/00-贯穿项目方案.md)
-- [默认项目设定：CampusHub](./docs/00-贯穿项目设定.md)
-- [CampusHub 项目开发实施方案](./docs/01-CampusHub项目开发实施方案.md)
 - [CampusHub Testing Lab 第一阶段工程](./campushub-testing-lab/README.md)
-- [第 01 期草稿骨架](./articles/01-软件测试到底在测什么.md)
-- [第 02 期草稿骨架](./articles/02-测试岗位与能力路线.md)
-- [发布检查清单](./docs/csdn-publishing-checklist.md)
 - [结构检查脚本](./scripts/check_column.py)
 - [文章模板](./templates/article-template.md)
 

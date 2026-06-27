@@ -5,12 +5,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 REQUIRED_PATHS = [
     "README.md",
-    "articles",
-    "assets/images",
     "case-project",
-    "docs/00-专栏规划.md",
-    "docs/00-贯穿项目方案.md",
-    "docs/csdn-publishing-checklist.md",
     "templates/article-template.md",
 ]
 
@@ -41,7 +36,7 @@ def main() -> int:
     for path in ROOT.rglob("*.md"):
         rel = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8")
-        if rel in ALLOWLIST_FILES:
+        if rel.startswith(("articles/", "docs/")) or rel in ALLOWLIST_FILES:
             continue
         for word in BANNED_EXAMPLES:
             if word in text:
