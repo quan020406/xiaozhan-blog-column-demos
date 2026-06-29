@@ -1,0 +1,581 @@
+{
+  "schemaVersion": "1.0.0",
+  "generatedAt": "2026-06-27T23:07:36+08:00",
+  "dataMode": "generated",
+  "datasetNote": "由 scripts/generate_test_dashboard.py 汇总 JUnit XML、Selenium 截图、JMeter JTL 和 Bug Markdown 生成；缺失输入会在 runEvidence.reportFiles 中标记。",
+  "project": {
+    "name": "CampusHub Testing Lab",
+    "version": "0.2.0-SNAPSHOT",
+    "description": "CampusHub 教学项目测试可视化看板"
+  },
+  "summary": {
+    "totalCases": 9,
+    "passed": 9,
+    "failed": 0,
+    "blocked": 0,
+    "skipped": 0,
+    "passRate": 100.0,
+    "openBugs": 0,
+    "sampleBugs": 1,
+    "criticalBugs": 0,
+    "performanceStatus": "passed",
+    "qualityGate": "passed",
+    "qualityScore": 100,
+    "qualityReason": "JUnit 通过 9/9，真实开放缺陷 0 个，教学样例缺陷 1 个，性能状态 passed。"
+  },
+  "modules": [
+    {
+      "id": "auth",
+      "name": "账号中心",
+      "scope": "登录、角色、连续失败锁定",
+      "owner": "脚本生成",
+      "caseCount": 1,
+      "passed": 1,
+      "failed": 0,
+      "blocked": 0,
+      "coverageRate": 100.0,
+      "riskLevel": "low"
+    },
+    {
+      "id": "activity",
+      "name": "活动中心",
+      "scope": "活动浏览、报名、取消报名",
+      "owner": "脚本生成",
+      "caseCount": 1,
+      "passed": 1,
+      "failed": 0,
+      "blocked": 0,
+      "coverageRate": 100.0,
+      "riskLevel": "low"
+    },
+    {
+      "id": "room",
+      "name": "场地预约",
+      "scope": "场地查询、预约申请、冲突时段",
+      "owner": "脚本生成",
+      "caseCount": 1,
+      "passed": 1,
+      "failed": 0,
+      "blocked": 0,
+      "coverageRate": 100.0,
+      "riskLevel": "low"
+    },
+    {
+      "id": "device",
+      "name": "设备借用",
+      "scope": "设备库存、借用申请、重复借用",
+      "owner": "脚本生成",
+      "caseCount": 1,
+      "passed": 1,
+      "failed": 0,
+      "blocked": 0,
+      "coverageRate": 100.0,
+      "riskLevel": "low"
+    },
+    {
+      "id": "notification",
+      "name": "消息通知",
+      "scope": "通知列表、已读状态、归属校验",
+      "owner": "脚本生成",
+      "caseCount": 1,
+      "passed": 1,
+      "failed": 0,
+      "blocked": 0,
+      "coverageRate": 100.0,
+      "riskLevel": "low"
+    },
+    {
+      "id": "booknest",
+      "name": "BookNest",
+      "scope": "图书检索、借阅、续借、归还",
+      "owner": "脚本生成",
+      "caseCount": 1,
+      "passed": 1,
+      "failed": 0,
+      "blocked": 0,
+      "coverageRate": 100.0,
+      "riskLevel": "low"
+    },
+    {
+      "id": "review",
+      "name": "后台审核",
+      "scope": "审核任务、权限、操作日志",
+      "owner": "脚本生成",
+      "caseCount": 2,
+      "passed": 2,
+      "failed": 0,
+      "blocked": 0,
+      "coverageRate": 100.0,
+      "riskLevel": "low"
+    },
+    {
+      "id": "system",
+      "name": "系统健康",
+      "scope": "健康检查、OpenAPI 文档",
+      "owner": "脚本生成",
+      "caseCount": 1,
+      "passed": 1,
+      "failed": 0,
+      "blocked": 0,
+      "coverageRate": 100.0,
+      "riskLevel": "low"
+    }
+  ],
+  "testTypes": [
+    {
+      "type": "api",
+      "label": "接口测试",
+      "caseCount": 9,
+      "passed": 9,
+      "status": "passed"
+    },
+    {
+      "type": "ui-automation",
+      "label": "UI 自动化",
+      "caseCount": 6,
+      "passed": 6,
+      "status": "passed"
+    },
+    {
+      "type": "performance",
+      "label": "性能测试",
+      "caseCount": 1,
+      "passed": 1,
+      "status": "passed"
+    },
+    {
+      "type": "release-check",
+      "label": "发布检查",
+      "caseCount": 1,
+      "passed": 1,
+      "status": "passed"
+    }
+  ],
+  "testCases": [
+    {
+      "id": "AUTO-SYSTEM-001",
+      "title": "openApiDocumentIsAvailable",
+      "module": "system",
+      "type": "api",
+      "priority": "P1",
+      "status": "passed",
+      "executor": "maven-surefire",
+      "lastRunAt": "2026-06-27T23:07:36+08:00",
+      "evidence": {
+        "kind": "junit",
+        "summary": "Surefire 用例 openApiDocumentIsAvailable 执行结果为 passed",
+        "path": "backend/target/surefire-reports"
+      },
+      "automation": {
+        "available": false,
+        "scriptPath": "",
+        "screenshotPath": ""
+      },
+      "performance": {
+        "related": false,
+        "scenarioId": ""
+      }
+    },
+    {
+      "id": "AUTO-REVIEW-002",
+      "title": "studentCannotDecideReviewTask",
+      "module": "review",
+      "type": "api",
+      "priority": "P1",
+      "status": "passed",
+      "executor": "maven-surefire",
+      "lastRunAt": "2026-06-27T23:07:36+08:00",
+      "evidence": {
+        "kind": "junit",
+        "summary": "Surefire 用例 studentCannotDecideReviewTask 执行结果为 passed",
+        "path": "backend/target/surefire-reports"
+      },
+      "automation": {
+        "available": false,
+        "scriptPath": "",
+        "screenshotPath": ""
+      },
+      "performance": {
+        "related": false,
+        "scenarioId": ""
+      }
+    },
+    {
+      "id": "AUTO-ROOM-003",
+      "title": "roomReservationRejectsMaintenanceAndConflictingSlot",
+      "module": "room",
+      "type": "api",
+      "priority": "P1",
+      "status": "passed",
+      "executor": "maven-surefire",
+      "lastRunAt": "2026-06-27T23:07:36+08:00",
+      "evidence": {
+        "kind": "junit",
+        "summary": "Surefire 用例 roomReservationRejectsMaintenanceAndConflictingSlot 执行结果为 passed",
+        "path": "backend/target/surefire-reports"
+      },
+      "automation": {
+        "available": false,
+        "scriptPath": "",
+        "screenshotPath": ""
+      },
+      "performance": {
+        "related": false,
+        "scenarioId": ""
+      }
+    },
+    {
+      "id": "AUTO-REVIEW-004",
+      "title": "studentAndAdminCoreFlowsWork",
+      "module": "review",
+      "type": "api",
+      "priority": "P1",
+      "status": "passed",
+      "executor": "maven-surefire",
+      "lastRunAt": "2026-06-27T23:07:36+08:00",
+      "evidence": {
+        "kind": "junit",
+        "summary": "Surefire 用例 studentAndAdminCoreFlowsWork 执行结果为 passed",
+        "path": "backend/target/surefire-reports"
+      },
+      "automation": {
+        "available": false,
+        "scriptPath": "",
+        "screenshotPath": ""
+      },
+      "performance": {
+        "related": false,
+        "scenarioId": ""
+      }
+    },
+    {
+      "id": "AUTO-ACTIVITY-005",
+      "title": "activityRegistrationRejectsDuplicateAndFullActivity",
+      "module": "activity",
+      "type": "api",
+      "priority": "P1",
+      "status": "passed",
+      "executor": "maven-surefire",
+      "lastRunAt": "2026-06-27T23:07:36+08:00",
+      "evidence": {
+        "kind": "junit",
+        "summary": "Surefire 用例 activityRegistrationRejectsDuplicateAndFullActivity 执行结果为 passed",
+        "path": "backend/target/surefire-reports"
+      },
+      "automation": {
+        "available": false,
+        "scriptPath": "",
+        "screenshotPath": ""
+      },
+      "performance": {
+        "related": true,
+        "scenarioId": "PERF-ACT-001"
+      }
+    },
+    {
+      "id": "AUTO-AUTH-006",
+      "title": "loginRejectsWrongPasswordAndLockedUser",
+      "module": "auth",
+      "type": "api",
+      "priority": "P1",
+      "status": "passed",
+      "executor": "maven-surefire",
+      "lastRunAt": "2026-06-27T23:07:36+08:00",
+      "evidence": {
+        "kind": "junit",
+        "summary": "Surefire 用例 loginRejectsWrongPasswordAndLockedUser 执行结果为 passed",
+        "path": "backend/target/surefire-reports"
+      },
+      "automation": {
+        "available": false,
+        "scriptPath": "",
+        "screenshotPath": ""
+      },
+      "performance": {
+        "related": false,
+        "scenarioId": ""
+      }
+    },
+    {
+      "id": "AUTO-DEVICE-007",
+      "title": "deviceBorrowRejectsOutOfStockAndDuplicateBorrow",
+      "module": "device",
+      "type": "api",
+      "priority": "P1",
+      "status": "passed",
+      "executor": "maven-surefire",
+      "lastRunAt": "2026-06-27T23:07:36+08:00",
+      "evidence": {
+        "kind": "junit",
+        "summary": "Surefire 用例 deviceBorrowRejectsOutOfStockAndDuplicateBorrow 执行结果为 passed",
+        "path": "backend/target/surefire-reports"
+      },
+      "automation": {
+        "available": false,
+        "scriptPath": "",
+        "screenshotPath": ""
+      },
+      "performance": {
+        "related": false,
+        "scenarioId": ""
+      }
+    },
+    {
+      "id": "AUTO-BOOKNEST-008",
+      "title": "bookBorrowRejectsOutOfStockAndSecondRenewal",
+      "module": "booknest",
+      "type": "api",
+      "priority": "P1",
+      "status": "passed",
+      "executor": "maven-surefire",
+      "lastRunAt": "2026-06-27T23:07:36+08:00",
+      "evidence": {
+        "kind": "junit",
+        "summary": "Surefire 用例 bookBorrowRejectsOutOfStockAndSecondRenewal 执行结果为 passed",
+        "path": "backend/target/surefire-reports"
+      },
+      "automation": {
+        "available": false,
+        "scriptPath": "",
+        "screenshotPath": ""
+      },
+      "performance": {
+        "related": false,
+        "scenarioId": ""
+      }
+    },
+    {
+      "id": "AUTO-NOTIFICATION-009",
+      "title": "notificationsCanBeListedAndMarkedRead",
+      "module": "notification",
+      "type": "api",
+      "priority": "P1",
+      "status": "passed",
+      "executor": "maven-surefire",
+      "lastRunAt": "2026-06-27T23:07:36+08:00",
+      "evidence": {
+        "kind": "junit",
+        "summary": "Surefire 用例 notificationsCanBeListedAndMarkedRead 执行结果为 passed",
+        "path": "backend/target/surefire-reports"
+      },
+      "automation": {
+        "available": false,
+        "scriptPath": "",
+        "screenshotPath": ""
+      },
+      "performance": {
+        "related": false,
+        "scenarioId": ""
+      }
+    }
+  ],
+  "bugs": [
+    {
+      "id": "BUG-BOOKNEST-001",
+      "title": "Bug 报告样例：归还图书后可借库存未恢复",
+      "module": "booknest",
+      "severity": "major",
+      "priority": "P2",
+      "status": "sample",
+      "evidenceType": "teaching-sample",
+      "foundBy": "markdown-sample",
+      "relatedCaseId": "",
+      "summary": "教学用 Bug 报告样例，不计入当前工程开放缺陷。",
+      "reproducePath": "test-assets/bug-reports/sample-book-inventory-inconsistency.md",
+      "createdAt": "2026-06-27T23:07:36+08:00"
+    }
+  ],
+  "performance": {
+    "scenarioId": "PERF-ACT-001",
+    "title": "活动报名接口性能趋势",
+    "dataSource": "generated",
+    "unit": {
+      "responseTime": "ms",
+      "throughput": "req/s",
+      "errorRate": "%"
+    },
+    "thresholds": {
+      "p95ResponseMs": 800,
+      "errorRate": 1
+    },
+    "status": "passed",
+    "sampleCount": 30,
+    "failureCount": 0,
+    "totalErrorRate": 0.0,
+    "maxP95ResponseMs": 39.2,
+    "series": [
+      {
+        "time": "GET /api/health",
+        "avgResponseMs": 15.4,
+        "p95ResponseMs": 39.0,
+        "throughputPerSecond": 5,
+        "errorRate": 0.0,
+        "note": "从 jmeter-latest.jtl 聚合 5 条样本"
+      },
+      {
+        "time": "GET /api/activities",
+        "avgResponseMs": 20.4,
+        "p95ResponseMs": 39.2,
+        "throughputPerSecond": 5,
+        "errorRate": 0.0,
+        "note": "从 jmeter-latest.jtl 聚合 5 条样本"
+      },
+      {
+        "time": "GET /api/rooms",
+        "avgResponseMs": 16.0,
+        "p95ResponseMs": 24.8,
+        "throughputPerSecond": 5,
+        "errorRate": 0.0,
+        "note": "从 jmeter-latest.jtl 聚合 5 条样本"
+      },
+      {
+        "time": "GET /api/devices",
+        "avgResponseMs": 10.0,
+        "p95ResponseMs": 15.0,
+        "throughputPerSecond": 5,
+        "errorRate": 0.0,
+        "note": "从 jmeter-latest.jtl 聚合 5 条样本"
+      },
+      {
+        "time": "GET /api/notifications",
+        "avgResponseMs": 15.4,
+        "p95ResponseMs": 26.4,
+        "throughputPerSecond": 5,
+        "errorRate": 0.0,
+        "note": "从 jmeter-latest.jtl 聚合 5 条样本"
+      },
+      {
+        "time": "GET /api/books keyword",
+        "avgResponseMs": 20.6,
+        "p95ResponseMs": 27.6,
+        "throughputPerSecond": 5,
+        "errorRate": 0.0,
+        "note": "从 jmeter-latest.jtl 聚合 5 条样本"
+      }
+    ],
+    "reportPath": "test-assets/reports/jmeter-latest.jtl",
+    "notes": "由 JMeter JTL 聚合生成；状态由总错误率和最大 P95 阈值共同判定。"
+  },
+  "automation": {
+    "latestRun": {
+      "status": "passed",
+      "runId": "ui-selenium-latest",
+      "startedAt": "2026-06-27T22:12:21+08:00",
+      "finishedAt": "2026-06-27T22:12:25+08:00",
+      "browser": "Chrome",
+      "scriptPath": "test-assets/selenium/test_login_activity_book.py",
+      "summaryPath": "test-assets/reports/selenium-latest.json",
+      "stepCount": 6
+    },
+    "screenshots": [
+      {
+        "id": "shot-login",
+        "title": "登录成功页面",
+        "module": "auth",
+        "status": "captured",
+        "imagePath": "src/assets/test-assets/screenshots/selenium-login.png",
+        "caption": "Selenium 执行截图"
+      },
+      {
+        "id": "shot-activity",
+        "title": "活动报名页面",
+        "module": "activity",
+        "status": "captured",
+        "imagePath": "src/assets/test-assets/screenshots/selenium-activity.png",
+        "caption": "Selenium 执行截图"
+      },
+      {
+        "id": "shot-room",
+        "title": "场地预约页面",
+        "module": "room",
+        "status": "captured",
+        "imagePath": "src/assets/test-assets/screenshots/selenium-room.png",
+        "caption": "Selenium 执行截图"
+      },
+      {
+        "id": "shot-device",
+        "title": "设备借用页面",
+        "module": "device",
+        "status": "captured",
+        "imagePath": "src/assets/test-assets/screenshots/selenium-device.png",
+        "caption": "Selenium 执行截图"
+      },
+      {
+        "id": "shot-booknest",
+        "title": "BookNest 借阅页面",
+        "module": "booknest",
+        "status": "captured",
+        "imagePath": "src/assets/test-assets/screenshots/selenium-booknest.png",
+        "caption": "Selenium 执行截图"
+      },
+      {
+        "id": "shot-notification",
+        "title": "消息通知页面",
+        "module": "notification",
+        "status": "captured",
+        "imagePath": "src/assets/test-assets/screenshots/selenium-notification.png",
+        "caption": "Selenium 执行截图"
+      }
+    ]
+  },
+  "runEvidence": {
+    "commands": [
+      {
+        "name": "后端单元测试",
+        "command": "mvn test",
+        "cwd": "campushub-testing-lab/backend",
+        "status": "passed",
+        "summary": "Surefire XML 已读取，通过 9 条"
+      },
+      {
+        "name": "UI 自动化",
+        "command": "python test_login_activity_book.py --base-url http://localhost:5173",
+        "cwd": "campushub-testing-lab/test-assets/selenium",
+        "status": "passed",
+        "summary": "Selenium 已读取，步骤 6 条"
+      },
+      {
+        "name": "测试看板生成",
+        "command": "python scripts/generate_test_dashboard.py",
+        "cwd": "campushub-testing-lab",
+        "status": "passed",
+        "summary": "已生成前端测试看板 JSON"
+      },
+      {
+        "name": "性能结果聚合",
+        "command": "jmeter -n -t test-assets/jmeter/campushub-activity-booknest-smoke.jmx -l test-assets/reports/jmeter-latest.jtl",
+        "cwd": "campushub-testing-lab",
+        "status": "passed",
+        "summary": "JMeter JTL 已读取，错误率 0.0%"
+      }
+    ],
+    "environment": {
+      "java": "17",
+      "node": "18+",
+      "database": "H2",
+      "browser": "Chrome or Edge"
+    },
+    "reportFiles": [
+      {
+        "kind": "junit",
+        "path": "backend/target/surefire-reports",
+        "available": true
+      },
+      {
+        "kind": "selenium",
+        "path": "test-assets/reports/selenium-latest.json",
+        "available": true
+      },
+      {
+        "kind": "jmeter",
+        "path": "test-assets/reports/jmeter-latest.jtl",
+        "available": true
+      }
+    ]
+  },
+  "nextActions": [
+    "运行 Selenium 后用真实 PNG 覆盖截图占位",
+    "运行 JMeter 并输出 test-assets/reports/jmeter-latest.jtl",
+    "把设备借用和通知模块接入同一套测试证据生成链路"
+  ]
+}

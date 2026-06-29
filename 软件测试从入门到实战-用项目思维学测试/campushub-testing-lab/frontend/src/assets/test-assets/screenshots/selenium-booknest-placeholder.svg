@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-label="Selenium BookNest placeholder">
+  <rect width="960" height="540" fill="#f8fafc"/>
+  <rect x="42" y="42" width="876" height="456" rx="18" fill="#ffffff" stroke="#dbe3ef"/>
+  <rect x="90" y="88" width="260" height="30" rx="6" fill="#111827"/>
+  <rect x="90" y="146" width="620" height="42" rx="8" fill="#f1f5f9" stroke="#dbe3ef"/>
+  <rect x="734" y="146" width="120" height="42" rx="8" fill="#18181b"/>
+  <rect x="90" y="230" width="178" height="156" rx="12" fill="#eff6ff" stroke="#bfdbfe"/>
+  <rect x="294" y="230" width="178" height="156" rx="12" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <rect x="498" y="230" width="178" height="156" rx="12" fill="#fff7ed" stroke="#fed7aa"/>
+  <rect x="702" y="230" width="152" height="156" rx="12" fill="#f8fafc" stroke="#dbe3ef"/>
+  <text x="90" y="438" fill="#334155" font-family="Segoe UI, Arial" font-size="24" font-weight="700">BookNest 借阅证据占位</text>
+  <text x="90" y="474" fill="#64748b" font-family="Segoe UI, Arial" font-size="18">后续展示检索、借阅、续借或归还的真实截图。</text>
+</svg>
