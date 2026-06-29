@@ -24,6 +24,13 @@ ALLOWLIST_FILES = {
     "docs/00-贯穿项目设定.md",
     "docs/csdn-publishing-checklist.md",
 }
+SKIP_DIRS = {
+    "node_modules",
+    "dist",
+    "target",
+    ".vite",
+    ".git",
+}
 
 
 def main() -> int:
@@ -34,6 +41,8 @@ def main() -> int:
             errors.append(f"missing required path: {item}")
 
     for path in ROOT.rglob("*.md"):
+        if any(part in SKIP_DIRS for part in path.relative_to(ROOT).parts):
+            continue
         rel = path.relative_to(ROOT).as_posix()
         text = path.read_text(encoding="utf-8")
         if rel.startswith(("articles/", "docs/")) or rel in ALLOWLIST_FILES:
