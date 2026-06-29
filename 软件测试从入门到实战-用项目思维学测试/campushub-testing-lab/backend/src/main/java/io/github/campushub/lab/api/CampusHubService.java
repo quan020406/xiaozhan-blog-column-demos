@@ -7,21 +7,11 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-@RestController
-@RequestMapping("/api")
-@CrossOrigin(originPatterns = {"http://localhost:*", "http://127.0.0.1:*"})
-public class CampusHubController {
+@Service
+public class CampusHubService {
 
     private static final int MAX_ACTIVE_BORROWS = 3;
     private static final int BORROW_DAYS = 30;
@@ -29,20 +19,18 @@ public class CampusHubController {
 
     private final JdbcClient jdbcClient;
 
-    public CampusHubController(JdbcClient jdbcClient) {
+    public CampusHubService(JdbcClient jdbcClient) {
         this.jdbcClient = jdbcClient;
     }
-
-    @GetMapping("/health")
     public Map<String, String> health() {
         return Map.of("status", "UP", "project", "campushub-testing-lab");
     }
-
-    @GetMapping("/overview")
     public OverviewResponse overview() {
         List<ModuleSummary> modules = List.of(
             new ModuleSummary("账号中心", "登录、角色、连续失败锁定", "等价类、权限矩阵、自动化前置条件"),
             new ModuleSummary("活动中心", "活动浏览、报名、取消报名", "场景法、判定表、性能测试"),
+            new ModuleSummary("场地预约", "场地查询、预约申请、审核流转", "边界值、时间冲突、状态流转"),
+            new ModuleSummary("设备借用", "设备库存、借用申请、通知提醒", "库存边界、审批链路、消息一致性"),
             new ModuleSummary("BookNest", "图书检索、借阅、续借、归还", "边界值、状态流转、数据一致性"),
             new ModuleSummary("后台审核", "审核任务、操作日志", "权限测试、审计字段完整性")
         );
@@ -57,9 +45,7 @@ public class CampusHubController {
 
         return new OverviewResponse("CampusHub Testing Lab", "0.2.0-SNAPSHOT", modules, statistics);
     }
-
-    @PostMapping("/auth/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public LoginResponse login( LoginRequest request) {
         UserItem user = findUserByUsername(request.username());
         if (!"ACTIVE".equals(user.status())) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "账号已锁定或不可用");
@@ -76,9 +62,7 @@ public class CampusHubController {
         writeAudit(user.username(), "LOGIN", "User", user.id());
         return new LoginResponse("demo-token-" + user.username(), user, permissionsFor(user.roleCode()));
     }
-
-    @GetMapping("/activities")
-    public List<ActivityItem> activities(@RequestParam(defaultValue = "") String username) {
+    public List<ActivityItem> activities( String username) {
         return jdbcClient.sql("""
                 select a.id, a.title, a.organizer, a.location, a.capacity, a.registered_count, a.status,
                        case when exists (
@@ -104,11 +88,9 @@ public class CampusHubController {
             ))
             .list();
     }
-
-    @PostMapping("/activities/{activityId}/registrations")
     public ActionResponse registerActivity(
-        @PathVariable Long activityId,
-        @RequestBody UserActionRequest request
+         Long activityId,
+         UserActionRequest request
     ) {
         UserItem user = requireActiveUser(request.username());
         ActivityState activity = findActivity(activityId);
@@ -150,9 +132,7 @@ public class CampusHubController {
         writeAudit(user.username(), "REGISTER_ACTIVITY", "Activity", activityId);
         return new ActionResponse("ACTIVITY_REGISTERED", "活动报名成功");
     }
-
-    @DeleteMapping("/activities/{activityId}/registrations/{username}")
-    public ActionResponse cancelActivity(@PathVariable Long activityId, @PathVariable String username) {
+    public ActionResponse cancelActivity( Long activityId,  String username) {
         UserItem user = requireActiveUser(username);
         int changed = jdbcClient.sql("""
                 update activity_registration
@@ -176,9 +156,7 @@ public class CampusHubController {
         writeAudit(user.username(), "CANCEL_ACTIVITY", "Activity", activityId);
         return new ActionResponse("ACTIVITY_CANCELLED", "活动报名已取消");
     }
-
-    @GetMapping("/books")
-    public List<BookItem> books(@RequestParam(defaultValue = "") String keyword) {
+    public List<BookItem> books( String keyword) {
         String likeKeyword = "%" + keyword.trim().toLowerCase() + "%";
         return jdbcClient.sql("""
                 select id, isbn, title, author, category, total_copies, available_copies
@@ -201,9 +179,7 @@ public class CampusHubController {
             ))
             .list();
     }
-
-    @GetMapping("/book-borrows")
-    public List<BookBorrowItem> bookBorrows(@RequestParam String username) {
+    public List<BookBorrowItem> bookBorrows( String username) {
         UserItem user = requireActiveUser(username);
         return jdbcClient.sql("""
                 select bb.id, b.title, bb.status, bb.borrowed_at, bb.due_at, bb.renew_count
@@ -223,9 +199,7 @@ public class CampusHubController {
             ))
             .list();
     }
-
-    @PostMapping("/books/{bookId}/borrow")
-    public ActionResponse borrowBook(@PathVariable Long bookId, @RequestBody UserActionRequest request) {
+    public ActionResponse borrowBook( Long bookId,  UserActionRequest request) {
         UserItem user = requireActiveUser(request.username());
         BookState book = findBook(bookId);
         if (book.availableCopies() <= 0) {
@@ -258,9 +232,7 @@ public class CampusHubController {
         writeAudit(user.username(), "BORROW_BOOK", "Book", bookId);
         return new ActionResponse("BOOK_BORROWED", "图书借阅成功");
     }
-
-    @PostMapping("/book-borrows/{borrowId}/renew")
-    public ActionResponse renewBook(@PathVariable Long borrowId, @RequestBody UserActionRequest request) {
+    public ActionResponse renewBook( Long borrowId,  UserActionRequest request) {
         UserItem user = requireActiveUser(request.username());
         BorrowState borrow = findBorrow(borrowId, user.id());
         if (!"BORROWED".equals(borrow.status())) {
@@ -283,9 +255,7 @@ public class CampusHubController {
         writeAudit(user.username(), "RENEW_BOOK", "BookBorrow", borrowId);
         return new ActionResponse("BOOK_RENEWED", "图书续借成功");
     }
-
-    @PostMapping("/book-borrows/{borrowId}/return")
-    public ActionResponse returnBook(@PathVariable Long borrowId, @RequestBody UserActionRequest request) {
+    public ActionResponse returnBook( Long borrowId,  UserActionRequest request) {
         UserItem user = requireActiveUser(request.username());
         BorrowState borrow = findBorrow(borrowId, user.id());
         if (!List.of("BORROWED", "OVERDUE").contains(borrow.status())) {
@@ -300,8 +270,226 @@ public class CampusHubController {
         writeAudit(user.username(), "RETURN_BOOK", "BookBorrow", borrowId);
         return new ActionResponse("BOOK_RETURNED", "图书归还成功");
     }
+    public List<RoomItem> rooms() {
+        return jdbcClient.sql("""
+                select r.id, r.name, r.building, r.capacity, r.status,
+                       (select count(*) from room_reservation rr
+                        where rr.room_id = r.id and rr.status in ('PENDING', 'APPROVED')) as active_reservations
+                from room r
+                order by r.id
+                """)
+            .query((rs, rowNum) -> new RoomItem(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("building"),
+                rs.getInt("capacity"),
+                rs.getString("status"),
+                rs.getInt("active_reservations")
+            ))
+            .list();
+    }
 
-    @GetMapping("/admin/review-tasks")
+    public List<RoomReservationItem> roomReservations(String username) {
+        UserItem user = requireActiveUser(username);
+        return jdbcClient.sql("""
+                select rr.id, r.name, rr.reservation_date, rr.start_hour, rr.end_hour, rr.status
+                from room_reservation rr
+                join room r on r.id = rr.room_id
+                where rr.user_id = :userId
+                order by rr.reservation_date desc, rr.start_hour
+                """)
+            .param("userId", user.id())
+            .query((rs, rowNum) -> new RoomReservationItem(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getDate("reservation_date").toLocalDate(),
+                rs.getInt("start_hour"),
+                rs.getInt("end_hour"),
+                rs.getString("status")
+            ))
+            .list();
+    }
+
+    public ActionResponse reserveRoom(Long roomId, RoomReservationRequest request) {
+        UserItem user = requireActiveUser(request.username());
+        RoomState room = findRoom(roomId);
+        if (!"AVAILABLE".equals(room.status())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "场地当前不可预约");
+        }
+        if (request.reservationDate() == null || request.reservationDate().isBefore(LocalDate.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "只能预约今天或未来日期");
+        }
+        if (request.startHour() < 8 || request.endHour() > 22 || request.startHour() >= request.endHour()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "预约时间必须在 8:00-22:00 且开始时间早于结束时间");
+        }
+        if (request.endHour() - request.startHour() > 3) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "单次预约不能超过 3 小时");
+        }
+        int conflicts = jdbcClient.sql("""
+                select count(*) from room_reservation
+                where room_id = :roomId
+                  and reservation_date = :reservationDate
+                  and status in ('PENDING', 'APPROVED')
+                  and start_hour < :endHour
+                  and end_hour > :startHour
+                """)
+            .param("roomId", roomId)
+            .param("reservationDate", request.reservationDate())
+            .param("startHour", request.startHour())
+            .param("endHour", request.endHour())
+            .query(Integer.class)
+            .single();
+        if (conflicts > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "该时段已有预约或待审核申请");
+        }
+        jdbcClient.sql("""
+                insert into room_reservation (room_id, user_id, reservation_date, start_hour, end_hour, status, created_at)
+                values (:roomId, :userId, :reservationDate, :startHour, :endHour, 'PENDING', :createdAt)
+                """)
+            .param("roomId", roomId)
+            .param("userId", user.id())
+            .param("reservationDate", request.reservationDate())
+            .param("startHour", request.startHour())
+            .param("endHour", request.endHour())
+            .param("createdAt", LocalDateTime.now())
+            .update();
+        jdbcClient.sql("""
+                insert into review_task (task_type, title, applicant, status, reviewer, comment, created_at, reviewed_at)
+                values ('ROOM_RESERVATION', :title, :applicant, 'PENDING', null, null, :createdAt, null)
+                """)
+            .param("title", room.name() + "预约申请")
+            .param("applicant", user.username())
+            .param("createdAt", LocalDateTime.now())
+            .update();
+        createNotification(user.id(), room.name() + "预约申请已提交");
+        writeAudit(user.username(), "RESERVE_ROOM", "Room", roomId);
+        return new ActionResponse("ROOM_RESERVATION_SUBMITTED", "场地预约申请已提交");
+    }
+
+    public List<DeviceItem> devices() {
+        return jdbcClient.sql("""
+                select id, name, category, total_quantity, available_quantity, status
+                from device
+                order by id
+                """)
+            .query((rs, rowNum) -> new DeviceItem(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("category"),
+                rs.getInt("total_quantity"),
+                rs.getInt("available_quantity"),
+                rs.getString("status")
+            ))
+            .list();
+    }
+
+    public List<DeviceBorrowItem> deviceBorrows(String username) {
+        UserItem user = requireActiveUser(username);
+        return jdbcClient.sql("""
+                select db.id, d.name, db.quantity, db.status, db.borrowed_at, db.due_at
+                from device_borrow db
+                join device d on d.id = db.device_id
+                where db.user_id = :userId
+                order by db.id desc
+                """)
+            .param("userId", user.id())
+            .query((rs, rowNum) -> new DeviceBorrowItem(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getInt("quantity"),
+                rs.getString("status"),
+                rs.getDate("borrowed_at").toLocalDate(),
+                rs.getDate("due_at").toLocalDate()
+            ))
+            .list();
+    }
+
+    public ActionResponse borrowDevice(Long deviceId, DeviceBorrowRequest request) {
+        UserItem user = requireActiveUser(request.username());
+        DeviceState device = findDevice(deviceId);
+        if (!"AVAILABLE".equals(device.status())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "设备当前不可借用");
+        }
+        if (request.quantity() == null || request.quantity() <= 0) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "借用数量必须大于 0");
+        }
+        if (request.quantity() > device.availableQuantity()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "设备可借数量不足");
+        }
+        if (request.borrowedAt() == null || request.dueAt() == null || request.borrowedAt().isAfter(request.dueAt())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "借用日期和归还日期不合法");
+        }
+        int existing = jdbcClient.sql("""
+                select count(*) from device_borrow
+                where device_id = :deviceId
+                  and user_id = :userId
+                  and status in ('PENDING', 'BORROWED')
+                """)
+            .param("deviceId", deviceId)
+            .param("userId", user.id())
+            .query(Integer.class)
+            .single();
+        if (existing > 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "同一设备已有待处理或借用中记录");
+        }
+        jdbcClient.sql("""
+                insert into device_borrow (device_id, user_id, quantity, status, borrowed_at, due_at, created_at)
+                values (:deviceId, :userId, :quantity, 'PENDING', :borrowedAt, :dueAt, :createdAt)
+                """)
+            .param("deviceId", deviceId)
+            .param("userId", user.id())
+            .param("quantity", request.quantity())
+            .param("borrowedAt", request.borrowedAt())
+            .param("dueAt", request.dueAt())
+            .param("createdAt", LocalDateTime.now())
+            .update();
+        jdbcClient.sql("""
+                insert into review_task (task_type, title, applicant, status, reviewer, comment, created_at, reviewed_at)
+                values ('DEVICE_BORROW', :title, :applicant, 'PENDING', null, null, :createdAt, null)
+                """)
+            .param("title", device.name() + "借用申请")
+            .param("applicant", user.username())
+            .param("createdAt", LocalDateTime.now())
+            .update();
+        createNotification(user.id(), device.name() + "借用申请已提交");
+        writeAudit(user.username(), "BORROW_DEVICE", "Device", deviceId);
+        return new ActionResponse("DEVICE_BORROW_SUBMITTED", "设备借用申请已提交");
+    }
+
+    public List<NotificationItem> notifications(String username) {
+        UserItem user = requireActiveUser(username);
+        return jdbcClient.sql("""
+                select id, title, read_flag
+                from notification
+                where user_id = :userId
+                order by id desc
+                """)
+            .param("userId", user.id())
+            .query((rs, rowNum) -> new NotificationItem(
+                rs.getLong("id"),
+                rs.getString("title"),
+                rs.getBoolean("read_flag")
+            ))
+            .list();
+    }
+
+    public ActionResponse markNotificationRead(Long notificationId, UserActionRequest request) {
+        UserItem user = requireActiveUser(request.username());
+        int changed = jdbcClient.sql("""
+                update notification
+                set read_flag = true
+                where id = :notificationId and user_id = :userId
+                """)
+            .param("notificationId", notificationId)
+            .param("userId", user.id())
+            .update();
+        if (changed == 0) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "通知不存在或不属于当前用户");
+        }
+        writeAudit(user.username(), "READ_NOTIFICATION", "Notification", notificationId);
+        return new ActionResponse("NOTIFICATION_READ", "通知已标记为已读");
+    }
+
     public List<ReviewTaskItem> reviewTasks() {
         return jdbcClient.sql("""
                 select id, task_type, title, applicant, status, reviewer, comment, created_at, reviewed_at
@@ -321,11 +509,9 @@ public class CampusHubController {
             ))
             .list();
     }
-
-    @PostMapping("/admin/review-tasks/{taskId}/decision")
     public ActionResponse decideReviewTask(
-        @PathVariable Long taskId,
-        @RequestBody ReviewDecisionRequest request
+         Long taskId,
+         ReviewDecisionRequest request
     ) {
         UserItem reviewer = requireActiveUser(request.reviewer());
         if (!List.of("SYSTEM_ADMIN", "LIBRARIAN", "LOGISTICS_ADMIN").contains(reviewer.roleCode())) {
@@ -397,6 +583,31 @@ public class CampusHubController {
             ))
             .optional()
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "活动不存在"));
+    }
+
+    private RoomState findRoom(Long roomId) {
+        return jdbcClient.sql("select id, name, status from room where id = :id")
+            .param("id", roomId)
+            .query((rs, rowNum) -> new RoomState(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("status")
+            ))
+            .optional()
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "场地不存在"));
+    }
+
+    private DeviceState findDevice(Long deviceId) {
+        return jdbcClient.sql("select id, name, available_quantity, status from device where id = :id")
+            .param("id", deviceId)
+            .query((rs, rowNum) -> new DeviceState(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getInt("available_quantity"),
+                rs.getString("status")
+            ))
+            .optional()
+            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "设备不存在"));
     }
 
     private BookState findBook(Long bookId) {
@@ -530,6 +741,55 @@ public class CampusHubController {
     ) {
     }
 
+    public record RoomItem(
+        Long id,
+        String name,
+        String building,
+        Integer capacity,
+        String status,
+        Integer activeReservations
+    ) {
+    }
+
+    public record RoomReservationRequest(String username, LocalDate reservationDate, Integer startHour, Integer endHour) {
+    }
+
+    public record RoomReservationItem(
+        Long id,
+        String roomName,
+        LocalDate reservationDate,
+        Integer startHour,
+        Integer endHour,
+        String status
+    ) {
+    }
+
+    public record DeviceItem(
+        Long id,
+        String name,
+        String category,
+        Integer totalQuantity,
+        Integer availableQuantity,
+        String status
+    ) {
+    }
+
+    public record DeviceBorrowRequest(String username, Integer quantity, LocalDate borrowedAt, LocalDate dueAt) {
+    }
+
+    public record DeviceBorrowItem(
+        Long id,
+        String deviceName,
+        Integer quantity,
+        String status,
+        LocalDate borrowedAt,
+        LocalDate dueAt
+    ) {
+    }
+
+    public record NotificationItem(Long id, String title, Boolean readFlag) {
+    }
+
     public record ReviewTaskItem(
         Long id,
         String taskType,
@@ -546,9 +806,17 @@ public class CampusHubController {
     private record ActivityState(Long id, String title, Integer capacity, Integer registeredCount, String status) {
     }
 
+    private record RoomState(Long id, String name, String status) {
+    }
+
+    private record DeviceState(Long id, String name, Integer availableQuantity, String status) {
+    }
+
     private record BookState(Long id, String title, Integer availableCopies) {
     }
 
     private record BorrowState(Long id, Long bookId, String status, LocalDate dueAt, Integer renewCount) {
     }
 }
+
+

@@ -38,6 +38,10 @@ insert into device (name, category, total_quantity, available_quantity, status) 
 ('便携音箱', '音频设备', 5, 0, 'OUT_OF_STOCK'),
 ('手持云台', '拍摄设备', 4, 1, 'AVAILABLE');
 
+insert into device_borrow (device_id, user_id, quantity, status, borrowed_at, due_at, created_at) values
+(1, 3, 1, 'BORROWED', date '2026-06-16', date '2026-06-30', timestamp '2026-06-15 10:00:00'),
+(4, 1, 1, 'PENDING', date '2026-06-28', date '2026-07-05', timestamp '2026-06-21 09:30:00');
+
 insert into book (isbn, title, author, category, total_copies, available_copies) values
 ('978-7-001-00001-1', '软件测试入门实践', 'CampusHub 教研组', '软件测试', 5, 3),
 ('978-7-001-00002-8', 'Web 自动化测试基础', 'CampusHub 教研组', '自动化测试', 4, 2),
@@ -73,6 +77,10 @@ insert into book_borrow (book_id, user_id, status, borrowed_at, due_at, renew_co
 (7, 2, 'BORROWED', date '2026-06-15', date '2026-07-15', 0),
 (18, 1, 'RESERVED', date '2026-06-20', date '2026-07-20', 0);
 
+insert into room_reservation (room_id, user_id, reservation_date, start_hour, end_hour, status, created_at) values
+(4, 2, date '2026-06-28', 9, 11, 'APPROVED', timestamp '2026-06-18 15:00:00'),
+(1, 1, date '2026-06-29', 14, 16, 'PENDING', timestamp '2026-06-20 09:00:00');
+
 insert into notification (user_id, title, read_flag) values
 (1, '新生编程训练营报名成功', false),
 (2, '校园摄影工作坊名额已满', true),
@@ -88,3 +96,4 @@ insert into audit_log (actor, action, target_type, target_id, created_at) values
 ('admin01', 'CREATE_ACTIVITY', 'Activity', 1, timestamp '2026-05-25 10:00:00'),
 ('library01', 'MARK_BOOK_OVERDUE', 'BookBorrow', 2, timestamp '2026-06-02 09:30:00'),
 ('logistics01', 'UPDATE_DEVICE_STOCK', 'Device', 7, timestamp '2026-06-05 15:20:00');
+
