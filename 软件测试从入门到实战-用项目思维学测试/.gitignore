@@ -1,0 +1,32 @@
+# Local writing workspace
+/articles/
+/docs/
+/assets/images/
+
+# Generated reports and runtime output
+**/reports/
+**/logs/
+*.log
+
+# Java
+**/target/
+
+# Node/Vite
+**/node_modules/
+**/dist/
+**/.vite/
+**/tsconfig.tsbuildinfo
+
+# Python
+**/__pycache__/
+**/.pytest_cache/
+**/*.pyc
+
+# Local environment and editor files
+**/.env
+**/.env.*
+!**/.env.example
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

@@ -1,55 +1,25 @@
 # Selenium 示例脚本
 
-## 用途
+本目录承接第 20-22 期文章。脚本只覆盖稳定主链路，不替代探索式测试。
 
-`test_login_activity_book.py` 演示一个稳定核心流程，并把截图写入 QA Console 可读取目录：
+## 运行前提
 
-1. 打开 CampusHub 前端。
-2. 使用学生账号登录。
-3. 报名一个开放活动。
-4. 提交场地预约。
-5. 提交设备借用申请。
-6. 借阅一本可借图书。
-7. 标记本人通知为已读。
+1. 后端已启动：`http://localhost:8080`
+2. 前端已启动：`http://localhost:5173`
+3. 本机安装 Chrome
 
-## 环境要求
-
-- Python 3.10+
-- Chrome 浏览器
-- Selenium 4.6+，使用 Selenium Manager 自动解析驱动
-
-安装依赖：
+## 安装依赖
 
 ```powershell
-pip install -r requirements.txt
+pip install -r test-assets\selenium\requirements.txt
 ```
 
-运行前先启动项目：
+## 执行
 
 ```powershell
-cd backend
-mvn spring-boot:run
-
-cd ..\frontend
-npm run dev
+python test-assets\selenium\test_login_activity_book.py --base-url http://127.0.0.1:5173
 ```
 
-运行脚本：
+脚本会验证登录、活动列表、活动报名和 BookNest 借阅基础路径。失败时会在命令行输出失败步骤。
 
-```powershell
-python test_login_activity_book.py --base-url http://localhost:5173
-```
-
-默认输出：
-
-```text
-frontend/src/assets/test-assets/screenshots/selenium-login.png
-frontend/src/assets/test-assets/screenshots/selenium-activity.png
-frontend/src/assets/test-assets/screenshots/selenium-room.png
-frontend/src/assets/test-assets/screenshots/selenium-device.png
-frontend/src/assets/test-assets/screenshots/selenium-booknest.png
-frontend/src/assets/test-assets/screenshots/selenium-notification.png
-test-assets/reports/selenium-latest.json
-```
-
-如验证失败，脚本会生成 `frontend/src/assets/test-assets/screenshots/selenium-failure.png`，并在 `test-assets/reports/selenium-latest.json` 记录失败步骤。
+`pages.py` 提供最小页面对象分层：打开页面、登录、导航、点击首个可用按钮、等待反馈。第 22 期文章可以用它说明“手工步骤到脚本”的拆分方式，但不要把未运行截图写成真实执行证据。

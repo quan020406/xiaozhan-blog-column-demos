@@ -16,3 +16,7 @@
 **/assets/images/
 **/docs/
 **/articles/
+
+# CampusHub Testing Lab publishes engineering docs, while column writing docs stay local-only.
+!软件测试从入门到实战-用项目思维学测试/campushub-testing-lab/docs/
+!软件测试从入门到实战-用项目思维学测试/campushub-testing-lab/docs/**

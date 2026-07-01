@@ -1,6 +1,6 @@
 # FAQ
 
-## 这个项目应该先启动什么？
+## 这个项目先启动什么？
 
 先启动后端，再启动前端。后端提供 `/api` 接口，前端通过 Vite 代理访问后端。
 
@@ -23,7 +23,7 @@ npm run dev
 http://localhost:5173
 ```
 
-后端接口默认是：
+后端默认是：
 
 ```text
 http://localhost:8080
@@ -51,48 +51,59 @@ npm run dev
 按顺序检查：
 
 1. 后端是否已启动。
-2. `http://localhost:8080/api/health` 是否返回正常。
-3. 如果后端不是 8080，前端是否设置了 `VITE_API_BASE_URL`。
-4. 是否在修改环境变量后重启了前端 dev server。
-
-## 为什么 H2 数据重启后会恢复？
-
-项目默认使用 H2 内存数据库。应用启动时会重新加载 `schema.sql` 和 `data.sql`，这样每次练习都有一致的初始数据。
+2. `http://localhost:8080/api/health` 是否正常返回。
+3. 如果后端不是 `8080`，前端是否设置了 `VITE_API_BASE_URL`。
+4. 修改环境变量后是否重启了前端 dev server。
+5. 浏览器控制台里是否有接口跨域、代理或网络错误。
 
 ## 默认账号是什么？
-
-常用账号：
 
 | 角色 | 用户名 | 密码 |
 | --- | --- | --- |
 | 学生 | `student01` | `campus123` |
-| UI 自动化学生 | `student02` | `campus123` |
+| 学生 | `student02` | `campus123` |
 | 管理员 | `admin01` | `campus123` |
 
-更多账号见 `README.md`。
+这些账号都是虚拟教学数据。
 
-## Selenium 脚本怎么跑？
+## 为什么重启后数据会恢复？
 
-先启动后端和前端，再执行：
+项目默认使用 H2 内存数据库。应用启动时会重新加载 `schema.sql` 和 `data.sql`，保证每次练习都有一致的初始数据。
 
-```powershell
-pip install -r test-assets\selenium\requirements.txt
-python test-assets\selenium\test_login_activity_book.py --base-url http://127.0.0.1:5173
-```
+## 这个项目适合直接部署生产吗？
 
-它会生成 UI 截图和 `test-assets/reports/selenium-latest.json`。
+不适合。它是测试教学项目，登录、权限、数据规模和部署方式都按教学演示设计。博客中可以展示运行方式、测试思路和测试资产，不能把它描述成生产级系统。
 
-## 没有 JMeter 怎么刷新性能趋势？
+## 为什么没有把 QA Command Center 作为首页？
 
-可以使用内置性能探针：
+当前版本优先让读者先操作普通业务页面，再理解测试如何介入业务交付。质量看板可以作为后续进阶视图，但不替代首页业务体验。
+
+## 当前需要检查哪些测试资产？
+
+基础材料：
+
+- `docs/requirements.md`
+- `docs/api-contract.md`
+- `docs/data-dictionary.md`
+- `docs/test-strategy.md`
+- `test-assets/test-cases/core-cases.md`
+- `test-assets/bug-reports/sample-activity-registration-full.md`
+- `test-assets/postman/campushub.postman_collection.json`
+- `test-assets/known-defects.md`
+
+自动化和性能材料：
+
+- `test-assets/selenium/test_login_activity_book.py`
+- `test-assets/jmeter/campushub-activity-booknest-smoke.jmx`
+- `scripts/run_performance_probe.py`
+- `scripts/check_ui_smoke.py`
+
+## 性能探针怎么跑？
+
+先启动后端，再执行：
 
 ```powershell
 python scripts\run_performance_probe.py --base-url http://localhost:8080 --loops 5
-python scripts\generate_test_dashboard.py
 ```
 
-刷新浏览器后，QA Command Center 会读取新的性能趋势。
-
-## JMeter 或性能探针结果能作为性能结论吗？
-
-不能。当前脚本只用于教学和看板证据生成。真实性能结论必须结合机器配置、数据量、并发模型和多次运行结果重新分析。
+输出文件在 `test-assets/reports/`。它只用于第 23-26 期教学演示，不代表通用性能结论。

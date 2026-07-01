@@ -6,6 +6,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +26,10 @@ class CampusHubControllerTest {
 
     @Test
     void studentAndAdminCoreFlowsWork() throws Exception {
+        String futureReservationDate = LocalDate.now().plusDays(1).toString();
+        String deviceBorrowDate = LocalDate.now().toString();
+        String deviceDueDate = LocalDate.now().plusDays(7).toString();
+
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"student02\",\"password\":\"campus123\"}"))
@@ -43,13 +49,13 @@ class CampusHubControllerTest {
             .andExpect(jsonPath("$.code", is("BOOK_BORROWED")));
         mockMvc.perform(post("/api/rooms/2/reservations")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"student02\",\"reservationDate\":\"2026-06-30\",\"startHour\":10,\"endHour\":12}"))
+                .content("{\"username\":\"student02\",\"reservationDate\":\"" + futureReservationDate + "\",\"startHour\":10,\"endHour\":12}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code", is("ROOM_RESERVATION_SUBMITTED")));
 
         mockMvc.perform(post("/api/devices/8/borrow")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"student02\",\"quantity\":1,\"borrowedAt\":\"2026-06-30\",\"dueAt\":\"2026-07-07\"}"))
+                .content("{\"username\":\"student02\",\"quantity\":1,\"borrowedAt\":\"" + deviceBorrowDate + "\",\"dueAt\":\"" + deviceDueDate + "\"}"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.code", is("DEVICE_BORROW_SUBMITTED")));
 
@@ -130,35 +136,46 @@ class CampusHubControllerTest {
 
     @Test
     void roomReservationRejectsMaintenanceAndConflictingSlot() throws Exception {
+        String futureReservationDate = LocalDate.now().plusDays(1).toString();
+
         mockMvc.perform(get("/api/rooms"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].name", is("A101 自习室")));
 
         mockMvc.perform(post("/api/rooms/5/reservations")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"student02\",\"reservationDate\":\"2026-06-30\",\"startHour\":9,\"endHour\":11}"))
+                .content("{\"username\":\"student02\",\"reservationDate\":\"" + futureReservationDate + "\",\"startHour\":9,\"endHour\":11}"))
             .andExpect(status().isConflict());
 
         mockMvc.perform(post("/api/rooms/1/reservations")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"student02\",\"reservationDate\":\"2026-06-29\",\"startHour\":15,\"endHour\":17}"))
+                .content("{\"username\":\"student01\",\"reservationDate\":\"" + futureReservationDate + "\",\"startHour\":15,\"endHour\":17}"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.code", is("ROOM_RESERVATION_SUBMITTED")));
+
+        mockMvc.perform(post("/api/rooms/1/reservations")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"username\":\"student02\",\"reservationDate\":\"" + futureReservationDate + "\",\"startHour\":16,\"endHour\":18}"))
             .andExpect(status().isConflict());
     }
 
     @Test
     void deviceBorrowRejectsOutOfStockAndDuplicateBorrow() throws Exception {
+        String deviceBorrowDate = LocalDate.now().toString();
+        String deviceDueDate = LocalDate.now().plusDays(7).toString();
+
         mockMvc.perform(get("/api/devices"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$[0].name", is("投影仪")));
 
         mockMvc.perform(post("/api/devices/7/borrow")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"student02\",\"quantity\":1,\"borrowedAt\":\"2026-06-30\",\"dueAt\":\"2026-07-07\"}"))
+                .content("{\"username\":\"student02\",\"quantity\":1,\"borrowedAt\":\"" + deviceBorrowDate + "\",\"dueAt\":\"" + deviceDueDate + "\"}"))
             .andExpect(status().isConflict());
 
         mockMvc.perform(post("/api/devices/4/borrow")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"username\":\"student01\",\"quantity\":1,\"borrowedAt\":\"2026-06-30\",\"dueAt\":\"2026-07-07\"}"))
+                .content("{\"username\":\"student01\",\"quantity\":1,\"borrowedAt\":\"" + deviceBorrowDate + "\",\"dueAt\":\"" + deviceDueDate + "\"}"))
             .andExpect(status().isConflict());
     }
 

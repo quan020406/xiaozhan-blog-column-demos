@@ -1,0 +1,210 @@
+{
+  "info": {
+    "name": "CampusHub Testing Lab Core",
+    "description": "CampusHub 01-26 期文章配套接口集合，覆盖登录、活动报名、BookNest、场地、设备、通知和审核基础接口。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "username", "value": "student01" },
+    { "key": "password", "value": "campus123" },
+    { "key": "adminUsername", "value": "admin01" },
+    { "key": "activityId", "value": "1" },
+    { "key": "bookId", "value": "1" },
+    { "key": "borrowId", "value": "1" },
+    { "key": "roomId", "value": "1" },
+    { "key": "deviceId", "value": "1" },
+    { "key": "notificationId", "value": "1" },
+    { "key": "taskId", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "01 登录",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/auth/login", "host": ["{{baseUrl}}"], "path": ["api", "auth", "login"] }
+      }
+    },
+    {
+      "name": "02 活动列表",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/activities?username={{username}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "activities"],
+          "query": [{ "key": "username", "value": "{{username}}" }]
+        }
+      }
+    },
+    {
+      "name": "03 活动报名",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/activities/{{activityId}}/registrations", "host": ["{{baseUrl}}"], "path": ["api", "activities", "{{activityId}}", "registrations"] }
+      }
+    },
+    {
+      "name": "04 取消报名",
+      "request": {
+        "method": "DELETE",
+        "url": { "raw": "{{baseUrl}}/api/activities/{{activityId}}/registrations/{{username}}", "host": ["{{baseUrl}}"], "path": ["api", "activities", "{{activityId}}", "registrations", "{{username}}"] }
+      }
+    },
+    {
+      "name": "05 图书列表和搜索",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/books?keyword=测试",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books"],
+          "query": [{ "key": "keyword", "value": "测试" }]
+        }
+      }
+    },
+    {
+      "name": "06 图书借阅",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/books/{{bookId}}/borrow", "host": ["{{baseUrl}}"], "path": ["api", "books", "{{bookId}}", "borrow"] }
+      }
+    },
+    {
+      "name": "07 我的借阅",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/book-borrows?username={{username}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "book-borrows"],
+          "query": [{ "key": "username", "value": "{{username}}" }]
+        }
+      }
+    },
+    {
+      "name": "08 图书续借",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/book-borrows/{{borrowId}}/renew", "host": ["{{baseUrl}}"], "path": ["api", "book-borrows", "{{borrowId}}", "renew"] }
+      }
+    },
+    {
+      "name": "09 图书归还",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/book-borrows/{{borrowId}}/return", "host": ["{{baseUrl}}"], "path": ["api", "book-borrows", "{{borrowId}}", "return"] }
+      }
+    },
+    {
+      "name": "10 场地列表",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/rooms", "host": ["{{baseUrl}}"], "path": ["api", "rooms"] }
+      }
+    },
+    {
+      "name": "11 提交场地预约",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\",\n  \"reservationDate\": \"2026-07-01\",\n  \"startHour\": 9,\n  \"endHour\": 11\n}" },
+        "url": { "raw": "{{baseUrl}}/api/rooms/{{roomId}}/reservations", "host": ["{{baseUrl}}"], "path": ["api", "rooms", "{{roomId}}", "reservations"] }
+      }
+    },
+    {
+      "name": "12 我的场地预约",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/room-reservations?username={{username}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "room-reservations"],
+          "query": [{ "key": "username", "value": "{{username}}" }]
+        }
+      }
+    },
+    {
+      "name": "13 设备列表",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/devices", "host": ["{{baseUrl}}"], "path": ["api", "devices"] }
+      }
+    },
+    {
+      "name": "14 提交设备借用",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\",\n  \"quantity\": 1,\n  \"borrowedAt\": \"2026-07-01\",\n  \"dueAt\": \"2026-07-08\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/devices/{{deviceId}}/borrow", "host": ["{{baseUrl}}"], "path": ["api", "devices", "{{deviceId}}", "borrow"] }
+      }
+    },
+    {
+      "name": "15 我的设备借用",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/device-borrows?username={{username}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "device-borrows"],
+          "query": [{ "key": "username", "value": "{{username}}" }]
+        }
+      }
+    },
+    {
+      "name": "16 消息通知",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "{{baseUrl}}/api/notifications?username={{username}}",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "notifications"],
+          "query": [{ "key": "username", "value": "{{username}}" }]
+        }
+      }
+    },
+    {
+      "name": "17 标记通知已读",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"{{username}}\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/notifications/{{notificationId}}/read", "host": ["{{baseUrl}}"], "path": ["api", "notifications", "{{notificationId}}", "read"] }
+      }
+    },
+    {
+      "name": "18 审核任务列表",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/admin/review-tasks", "host": ["{{baseUrl}}"], "path": ["api", "admin", "review-tasks"] }
+      }
+    },
+    {
+      "name": "19 处理审核任务",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"reviewer\": \"{{adminUsername}}\",\n  \"decision\": \"APPROVED\",\n  \"comment\": \"Postman 示例审核通过\"\n}" },
+        "url": { "raw": "{{baseUrl}}/api/admin/review-tasks/{{taskId}}/decision", "host": ["{{baseUrl}}"], "path": ["api", "admin", "review-tasks", "{{taskId}}", "decision"] }
+      }
+    },
+    {
+      "name": "20 系统概览",
+      "request": {
+        "method": "GET",
+        "url": { "raw": "{{baseUrl}}/api/overview", "host": ["{{baseUrl}}"], "path": ["api", "overview"] }
+      }
+    }
+  ]
+}
